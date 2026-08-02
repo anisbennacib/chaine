@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chaînes de caractères — Fiche de révision | ABN Academy</title>
+<style>
+/* ============================================================
+   ABN ACADEMY — MOTEUR (partie stable, ne change pas d'un chapitre à l'autre)
+   ============================================================ */
+:root{
+  --paper:#ffffff;
+  --surface:#eef3ee;
+  --surface-2:#e2ebe3;
+  --ink:#12231b;
+  --ink-soft:#4a5c51;
+  --line:#c9d8cc;
+  --green:#12784a;
+  --green-deep:#0b4f31;
+  --true:#12784a;
+  --false:#c2371f;
+  --cursor:#e8a33d;
+  --mono:"Cascadia Mono",Consolas,"SF Mono",ui-monospace,"Liberation Mono",monospace;
+  --sans:ui-sans-serif,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --cell:clamp(38px,7.2vw,62px);
+  --zoom:1;
+}
+html[data-theme="dark"]{
+  --paper:#0d1712;
+  --surface:#152219;
+  --surface-2:#1d2f23;
+  --ink:#e8f1ea;
+  --ink-soft:#9bb0a2;
+  --line:#2c4234;
+  --green:#4bc98a;
+  --green-deep:#8fe3b6;
+  --true:#4bc98a;
+  --false:#ff7a5e;
+  --cursor:#ffbe5c;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--sans);
+  font-size:calc(clamp(16px,1.05vw + 12px,20px) * var(--zoom));
+  line-height:1.55;-webkit-text-size-adjust:100%;
+}
+
+/* ---------- MODE PROJECTION : gros caractères, noyau seul ---------- */
+html[data-mode="projection"]{--cell:clamp(54px,6.4vw,92px)}
+html[data-mode="projection"] body{font-size:calc(clamp(21px,1.5vw + 14px,30px) * var(--zoom));line-height:1.45}
+html[data-mode="projection"] .detail{display:none !important}
+html[data-mode="projection"] main{max-width:1500px;padding:1.4rem clamp(1rem,3vw,2.5rem) 5.5rem}
+html[data-mode="projection"] h1{font-size:clamp(2rem,3.8vw,3.2rem);margin-bottom:1.2rem}
+html[data-mode="projection"] h2{font-size:1.15em}
+html[data-mode="projection"] p{max-width:54ch}
+html[data-mode="projection"] pre.algo{font-size:clamp(1rem,1.42vw,1.42rem);line-height:1.45;padding:1.1rem 1.3rem}
+html[data-mode="projection"] table.cmp,html[data-mode="projection"] table.tdo{font-size:.95em}
+html[data-mode="projection"] .log{font-size:.9em;max-height:8.5rem;min-height:4rem}
+html[data-mode="projection"] .note{margin:1.3rem 0}
+
+/* ---------- barre supérieure ---------- */
+.topbar{
+  position:sticky;top:0;z-index:20;background:var(--paper);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:.9rem;
+  padding:.55rem clamp(.8rem,3vw,2rem);
+}
+.brand{display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+.brand svg{display:block}
+.brand b{font-size:.8rem;letter-spacing:.13em;text-transform:uppercase;font-weight:800}
+.brand span{font-size:.68rem;color:var(--ink-soft);letter-spacing:.04em;display:block;margin-top:-2px}
+
+/* la navigation EST une bande indicée : les sections sont numérotées à partir de 0 */
+.strip{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+.strip button{
+  font-family:var(--mono);font-size:.78rem;font-weight:700;
+  width:26px;height:30px;border:1px solid var(--line);background:var(--paper);
+  color:var(--ink-soft);border-radius:3px;cursor:pointer;padding:0;
+}
+.strip button:hover{border-color:var(--green);color:var(--green)}
+.strip button[aria-current="true"]{background:var(--green);color:#fff;border-color:var(--green)}
+.iconbtn{
+  border:1px solid var(--line);background:var(--paper);color:var(--ink);
+  border-radius:3px;width:32px;height:30px;cursor:pointer;font-size:.95rem;line-height:1;
+}
+.iconbtn:hover{border-color:var(--green)}
+
+/* ---------- scène ---------- */
+main{max-width:1120px;margin:0 auto;padding:clamp(1.2rem,4vw,3rem) clamp(1rem,4vw,2rem) 6rem}
+section{display:none;animation:in .28s ease both}
+section[data-active]{display:block}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){section{animation:none}}
+
+.eyebrow{
+  font-family:var(--mono);font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--green);font-weight:700;margin-bottom:.5rem;
+}
+h1{font-size:clamp(1.65rem,3.4vw,2.6rem);line-height:1.12;letter-spacing:-.02em;margin:0 0 1rem;font-weight:800}
+h2{font-size:clamp(1.05rem,1.5vw,1.25rem);margin:2rem 0 .7rem;font-weight:800;letter-spacing:-.01em}
+p{margin:0 0 .85rem;max-width:68ch}
+.lead{font-size:1.08em;color:var(--ink-soft)}
+strong{font-weight:700}
+.mono{font-family:var(--mono)}
+
+/* ---------- blocs ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:clamp(.9rem,2.2vw,1.4rem);margin:1.1rem 0}
+.grid2{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));align-items:start}
+
+.algoblock{display:flex;flex-direction:column;gap:.65rem;align-items:flex-start;margin:1.1rem 0;width:100%}
+.algoblock pre.algo{width:100%}
+.algoblock table.tdo{margin-left:auto}
+pre.algo{
+  font-family:var(--mono);font-size:clamp(.86rem,1.35vw,1.06rem);line-height:1.5;
+  background:var(--surface);border:1px solid var(--line);border-radius:8px;
+  padding:1rem 1.1rem;margin:0;overflow-x:auto;white-space:pre;
+}
+pre.algo b{color:var(--green-deep);font-weight:700}
+html[data-theme="dark"] pre.algo b{color:var(--green)}
+pre.algo i{color:var(--false);font-style:normal;font-weight:700}
+
+table.tdo{border-collapse:collapse;font-family:var(--mono);font-size:.88rem;width:100%;max-width:340px}
+table.tdo caption{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-align:left;padding-bottom:.35rem;color:var(--ink-soft);font-weight:700}
+table.tdo th,table.tdo td{border:1px solid var(--line);padding:.34rem .6rem;text-align:left}
+table.tdo th{background:var(--surface-2);font-weight:700}
+
+table.cmp{border-collapse:collapse;width:100%;font-size:.95rem;margin:1rem 0}
+table.cmp th,table.cmp td{border:1px solid var(--line);padding:.55rem .7rem;text-align:left;vertical-align:top}
+table.cmp thead th{background:var(--surface-2);font-weight:800}
+table.cmp td:first-child{font-weight:700;width:9rem}
+table.cmp code{font-family:var(--mono);font-size:.92em}
+
+.note{border-left:4px solid var(--green);padding:.15rem 0 .15rem .9rem;margin:1.1rem 0}
+.note.warn{border-left-color:var(--false)}
+.note .tag{font-family:var(--mono);font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:var(--green);display:block;margin-bottom:.15rem}
+.note.warn .tag{color:var(--false)}
+
+/* ---------- LA BANDE INDICÉE : élément signature ---------- */
+.stripwrap{overflow-x:auto;padding:.4rem 0 .2rem}
+.cells{display:flex;gap:6px;min-width:min-content;position:relative;padding-top:0}
+.cellbox .flag{
+  height:2.2rem;display:flex;align-items:flex-end;justify-content:center;
+  font-family:var(--mono);font-size:.86rem;font-weight:800;
+}
+.cellbox .flag span{
+  padding:.1rem .45rem;border-radius:4px;color:#fff;opacity:0;transform:translateY(6px);
+  transition:opacity .18s ease,transform .18s ease;
+}
+.cellbox[data-flag] .flag span{opacity:1;transform:none}
+.cellbox[data-flag="Vrai"] .flag span{background:var(--true)}
+.cellbox[data-flag="Faux"] .flag span{background:var(--false)}
+.bee{
+  position:absolute;top:-.35rem;width:58px;pointer-events:none;
+  opacity:0;transition:opacity .25s ease,left .45s cubic-bezier(.34,1.4,.5,1);
+  animation:bob 1.5s ease-in-out infinite;
+}
+.bee[data-show]{opacity:1}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-7px) rotate(4deg)}}
+.bee .wing{transform-origin:50% 70%;animation:flap .18s ease-in-out infinite alternate}
+@keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(.62)}}
+@media (prefers-reduced-motion:reduce){
+  .bee,.bee .wing{animation:none}
+  .cellbox .flag span{transition:none}
+}
+.cellbox{width:var(--cell);flex:0 0 auto;text-align:center}
+.cellbox .ch{
+  height:var(--cell);display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:calc(var(--cell)*.46);font-weight:700;
+  border:2px solid var(--line);border-radius:5px;background:var(--paper);
+  transition:background .18s,border-color .18s,color .18s;
+}
+.cellbox .ix{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);margin-top:3px}
+.cellbox[data-state="scan"] .ch{border-color:var(--cursor);background:var(--cursor);color:#231703}
+.cellbox[data-state="ok"] .ch{border-color:var(--true);color:var(--true)}
+.cellbox[data-state="bad"] .ch{border-color:var(--false);background:var(--false);color:#fff}
+.cellbox[data-space] .ch::after{content:"␣";opacity:.45}
+
+/* ---------- simulateur ---------- */
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:clamp(.9rem,2.2vw,1.3rem)}
+.simhead{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.9rem}
+.simhead label{font-size:.85rem;font-weight:700}
+.simhead input{
+  font-family:var(--mono);font-size:1rem;padding:.4rem .6rem;border:1px solid var(--line);
+  border-radius:5px;background:var(--paper);color:var(--ink);width:min(230px,55vw);
+}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.9rem}
+.chips button{
+  font-family:var(--mono);font-size:.8rem;padding:.25rem .55rem;border:1px dashed var(--line);
+  background:transparent;color:var(--ink-soft);border-radius:99px;cursor:pointer;
+}
+.chips button:hover{border-style:solid;border-color:var(--green);color:var(--green)}
+
+.state{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0}
+.reg{
+  font-family:var(--mono);background:var(--paper);border:1px solid var(--line);
+  border-radius:5px;padding:.35rem .7rem;font-size:.95rem;
+}
+.reg span{color:var(--ink-soft);font-size:.8rem}
+.reg b{font-weight:800}
+.reg b.t{color:var(--true)}
+.reg b.f{color:var(--false)}
+
+.log{
+  font-family:var(--mono);font-size:.86rem;background:var(--paper);border:1px solid var(--line);
+  border-radius:6px;padding:.6rem .75rem;min-height:5.2rem;max-height:12rem;overflow-y:auto;margin-top:.6rem;
+}
+.log div{padding:.12rem 0;border-bottom:1px dotted var(--line)}
+.log div:last-child{border-bottom:0}
+.log .hint{color:var(--ink-soft)}
+.log .ok{color:var(--true)}
+.log .no{color:var(--false)}
+
+.simbtns{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.9rem}
+.btn{
+  font-family:var(--sans);font-size:.92rem;font-weight:700;padding:.5rem 1rem;
+  border-radius:5px;border:1px solid var(--green);background:var(--green);color:#fff;cursor:pointer;
+}
+.btn.ghost{background:transparent;color:var(--green)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.verdict{
+  margin-top:.8rem;font-family:var(--mono);font-weight:800;font-size:1.02rem;
+  padding:.55rem .8rem;border-radius:6px;display:none;
+}
+.verdict[data-show]{display:block}
+.verdict[data-v="true"]{background:var(--true);color:#fff}
+.verdict[data-v="false"]{background:var(--false);color:#fff}
+
+/* ---------- pied ---------- */
+.footnav{
+  position:fixed;bottom:0;left:0;right:0;background:var(--paper);border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:.8rem;padding:.5rem clamp(.8rem,3vw,2rem);z-index:20;
+}
+.footnav .pos{font-family:var(--mono);font-size:.8rem;color:var(--ink-soft);margin:0 auto}
+.nav{
+  font-family:var(--sans);font-weight:700;font-size:.9rem;padding:.45rem .9rem;border-radius:5px;
+  border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;
+}
+.nav:hover:not(:disabled){border-color:var(--green);color:var(--green)}
+.nav:disabled{opacity:.35;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--cursor);outline-offset:2px}
+
+
+/* ---------- QUIZ ---------- */
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:clamp(.9rem,2.2vw,1.4rem)}
+.qhead{display:flex;align-items:center;gap:.8rem;font-family:var(--mono);font-size:.85rem;color:var(--ink-soft);margin-bottom:.9rem}
+.qbar{flex:1;height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.qbar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s ease}
+html[data-mode="projection"] .qscore{display:none}
+.qstring{margin:.2rem 0 1rem}
+.qstring .cells{--cell:clamp(30px,5.2vw,54px);padding-top:0}
+html[data-mode="projection"] .qstring .cells{--cell:clamp(42px,5vw,72px)}
+.qtext{font-size:1.12em;font-weight:700;margin-bottom:.2rem}
+.qcall{font-family:var(--mono);font-size:1.35em;font-weight:800;color:var(--green-deep);margin:.35rem 0 1rem;word-break:break-word}
+html[data-theme="dark"] .qcall{color:var(--green)}
+.qopts{display:grid;gap:.55rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.qopt{
+  font-family:var(--mono);font-size:1.02em;text-align:left;padding:.6rem .85rem;cursor:pointer;
+  border:2px solid var(--line);border-radius:7px;background:var(--paper);color:var(--ink);
+}
+.qopt:hover:not(:disabled){border-color:var(--green)}
+.qopt:disabled{cursor:default}
+.qopt[data-pick]{border-color:var(--cursor);background:var(--cursor);color:#231703;font-weight:700}
+.qopt[data-good]{border-color:var(--true);background:var(--true);color:#fff;font-weight:700}
+.qopt[data-bad]{border-color:var(--false);background:var(--false);color:#fff;font-weight:700}
+.qwhy{display:none;margin-top:.9rem;border-left:4px solid var(--green);padding:.2rem 0 .2rem .9rem}
+.qwhy[data-show]{display:block}
+.qbtns{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+.qend{display:none;text-align:center;padding:1.4rem .6rem}
+.qend[data-show]{display:block}
+.qend b{display:block;font-family:var(--mono);font-size:2.6em;font-weight:800;color:var(--green)}
+
+/* ---------- BANC D'ESSAI : bornes d et f ---------- */
+.cellbox.ghost .ch{border-style:dashed;background:transparent;opacity:.55}
+.cellbox .mark{height:1.7rem;display:flex;align-items:flex-end;justify-content:center;gap:3px}
+.cellbox .mark i{font-family:var(--mono);font-style:normal;font-weight:800;font-size:.82rem;padding:.05rem .38rem;border-radius:4px;color:#fff}
+.cellbox .mark i.md{background:var(--green)}
+.cellbox .mark i.mf{background:var(--cursor);color:#231703}
+.cellbox[data-part="take"] .ch{border-color:var(--true);background:var(--true);color:#fff}
+.cellbox[data-part="out"]  .ch{opacity:.42}
+.cellbox[data-part="keep"] .ch{border-color:var(--true);color:var(--true)}
+.cellbox[data-part="cut"]  .ch{border-color:var(--false);background:var(--false);color:#fff;text-decoration:line-through}
+.cellbox[data-state="win"] .ch{border-color:var(--cursor);background:var(--cursor);color:#231703}
+.cellbox[data-state="hit"] .ch{border-color:var(--true);background:var(--true);color:#fff}
+.bornes{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;margin:.2rem 0 .8rem}
+.bornes label{font-family:var(--mono);font-size:.95rem;min-width:4.6rem}
+.bornes label b{font-size:1.15em}
+.bornes input[type=range]{flex:1;min-width:150px;accent-color:var(--green);height:1.4rem}
+.bres{margin-top:.9rem}
+.bres .line{font-family:var(--mono);font-size:1.02em;padding:.4rem .7rem;margin-bottom:.4rem;background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
+.bres .line span{color:var(--ink-soft)}
+.bres .line b{font-size:1.12em;color:var(--green-deep)}
+html[data-theme="dark"] .bres .line b{color:var(--green)}
+.bres .invar{border-style:dashed}
+.bres .hintline{background:transparent;border:0;color:var(--ink-soft);font-size:.92em;padding-left:0}
+.cells.mini{padding-top:0}
+.qstring .cells{--cell:clamp(30px,5.2vw,54px)}
+
+/* ---------- MACHINE À CONCATÉNER ---------- */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{font-family:var(--mono);font-size:.85rem;padding:.35rem .7rem;border:0;background:var(--paper);color:var(--ink-soft);cursor:pointer}
+.seg button.on{background:var(--green);color:#fff;font-weight:700}
+.reslabel{font-size:.85rem;color:var(--ink-soft);margin:.9rem 0 .25rem}
+.resbox{
+  font-family:var(--mono);font-size:clamp(1.5rem,4.2vw,2.7rem);font-weight:800;letter-spacing:.06em;
+  background:var(--paper);border:2px solid var(--line);border-radius:8px;padding:.45rem .7rem;
+  min-height:1.9em;display:flex;align-items:center;overflow-x:auto;
+}
+.resbox .new{color:#fff;background:var(--green);border-radius:5px;padding:0 .1em;animation:pop .3s cubic-bezier(.34,1.5,.5,1)}
+.resbox .empty{color:var(--ink-soft);font-size:.42em;font-weight:400;letter-spacing:0}
+@keyframes pop{from{transform:scale(.25) translateY(-14px);opacity:0}to{transform:none;opacity:1}}
+
+/* ---------- CHERCHEUR DE POSITION ---------- */
+.presult{
+  margin-top:.9rem;font-size:clamp(.95rem,1.9vw,1.3rem);padding:.55rem .8rem;border-radius:7px;
+  background:var(--paper);border:2px solid var(--line);
+}
+.presult b{font-size:1.15em;font-weight:800}
+.presult.yes{border-color:var(--true);color:var(--true)}
+.presult.no{border-color:var(--line);color:var(--ink-soft)}
+@media (prefers-reduced-motion:reduce){.resbox .new{animation:none}}
+
+/* ---------- PROJECTION : les blocs verts portent l'essentiel ---------- */
+html[data-mode="projection"] .note{font-size:1.1em;line-height:1.42}
+html[data-mode="projection"] .note .tag{font-size:.86rem;letter-spacing:.1em}
+html[data-mode="projection"] .panel{font-size:1.06em}
+html[data-mode="projection"] .lead{font-size:1.16em}
+html[data-mode="projection"] .bornes label{font-size:1.15rem;min-width:6rem}
+html[data-mode="projection"] .bornes input[type=range]{height:2.1rem}
+html[data-mode="projection"] .bres .line{font-size:1.18em}
+html[data-mode="projection"] .qstring .cells{--cell:clamp(42px,5vw,72px)}
+html[data-mode="projection"] .qopt{font-size:1.1em;padding:.75rem 1rem}
+html[data-mode="projection"] .qcall{font-size:1.55em}
+html[data-mode="projection"] .qtext{font-size:1.2em}
+
+.grid3{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));align-items:stretch;margin:1.1rem 0}
+.grid3 .panel{margin:0;display:flex;flex-direction:column}
+.grid3 .panel pre.algo{margin-top:auto;font-size:.95em}
+.grid3 .pt{font-size:.92em;color:var(--ink-soft);margin:.1rem 0 .6rem}
+.grid3 .pt b{color:var(--green);font-size:1.15em}
+button.reg{cursor:pointer;font-family:var(--mono);text-align:left}
+button.reg.act:hover{border-color:var(--green)}
+button.reg[data-on]{border-color:var(--green);box-shadow:0 0 0 2px var(--green) inset}
+.cellbox[data-state="pick"] .ch{border-color:var(--green);background:var(--green);color:#fff}
+.cellbox[data-state="count"] .ch{border-color:var(--cursor);background:var(--cursor);color:#231703}
+
+/* ---------- ÉCRAN DE SÉPARATION ---------- */
+section.sep{display:none}
+section.sep[data-active]{display:flex;flex-direction:column;justify-content:center;min-height:62vh}
+.sep .pnum{font-family:var(--mono);font-size:clamp(4rem,13vw,9rem);font-weight:800;line-height:.85;color:var(--green);opacity:.22}
+.sep h1{font-size:clamp(1.9rem,4.6vw,3.6rem);margin:.2rem 0 .8rem}
+.sep .steps{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem}
+.sep .steps span{
+  font-family:var(--mono);font-size:.95em;padding:.35rem .8rem;border-radius:99px;
+  border:1px solid var(--line);color:var(--ink-soft);background:var(--surface);
+}
+html[data-mode="projection"] .grid3 .panel{font-size:1.06em}
+
+.mstate{font-family:var(--mono);font-size:clamp(.88rem,1.6vw,1.08rem);padding:.5rem .75rem;margin-top:.7rem;
+  background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
+.mstate b{color:var(--green-deep);font-weight:800}
+html[data-theme="dark"] .mstate b{color:var(--green)}
+.mstate.yes{border-color:var(--true);color:var(--true)}
+.blocs{display:flex;flex-wrap:wrap;gap:.5rem}
+.bloc{border:2px solid var(--green);border-radius:7px;padding:.35rem .7rem;text-align:center;background:var(--paper);
+  animation:pop .3s cubic-bezier(.34,1.5,.5,1)}
+.bloc b{display:block;font-family:var(--mono);font-size:clamp(1rem,2.4vw,1.5rem);font-weight:800;color:var(--green-deep)}
+html[data-theme="dark"] .bloc b{color:var(--green)}
+.bloc i{font-family:var(--mono);font-style:normal;font-size:.72rem;color:var(--ink-soft)}
+html[data-mode="projection"] .mstate{font-size:1.15em}
+@media (prefers-reduced-motion:reduce){.bloc{animation:none}}
+
+.seg.wrapseg{flex-wrap:wrap}
+pre.algo mark{background:var(--cursor);color:#231703;padding:.05em .3em;border-radius:4px;font-weight:800}
+html[data-theme="dark"] pre.algo mark{background:var(--cursor);color:#231703}
+html[data-mode="projection"] .seg button{font-size:1rem;padding:.5rem 1rem}
+
+@media print{
+  .topbar,.footnav{display:none}
+  section{display:block!important;page-break-after:always}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 1.6 21.4 7v10L12 22.4 2.6 17V7z" fill="none" stroke="var(--green)" stroke-width="2"/>
+      <path d="M12 7.2 16.8 10v5.2L12 18l-4.8-2.8V10z" fill="var(--green)"/>
+    </svg>
+    <div>
+      <b>ABN Academy</b>
+      <span>4<sup>ème</sup> Sc. &amp; 3<sup>ème</sup> SI</span>
+    </div>
+  </div>
+  <nav class="strip" id="strip" aria-label="Sections"></nav>
+  <button class="iconbtn" id="zoomOut" title="Réduire le texte  (touche −)" aria-label="Réduire le texte">A−</button>
+  <button class="iconbtn" id="zoomIn" title="Agrandir le texte  (touche +)" aria-label="Agrandir le texte">A+</button>
+  <button class="iconbtn" id="mode" title="Mode projection / lecture  (touche P)" aria-label="Changer de mode" style="width:auto;padding:0 .6rem;font-size:.72rem;font-weight:800;letter-spacing:.06em">LECTURE</button>
+  <button class="iconbtn" id="full" title="Plein écran  (touche F)" aria-label="Plein écran">⛶</button>
+  <button class="iconbtn" id="theme" title="Contraste clair / sombre" aria-label="Changer le contraste">◑</button>
+</header>
+
+<main id="deck">
+<section class="sep" data-title="Partie 0" data-active>
+  <div class="pnum">0</div>
+  <div class="eyebrow">Partie 0</div>
+  <h1>Connaître les fonctions prédéfinies</h1>
+  <p class="lead">Ce que chaque fonction rend, et sur quelles cases elle travaille.</p>
+  <div class="steps"><span>Long</span><span>Pos</span><span>Convch</span><span>Valeur</span><span>Estnum</span><span>Sous_chaine</span><span>Effacer</span><span>Majus</span><span>Ord · Chr</span></div>
+</section>
+
+<!-- 0 -->
+<section data-title="La bande">
+  <div class="eyebrow">Partie 0 · Connaître</div>
+  <h1>La chaîne et ses indices</h1>
+  <p class="lead">Chaque caractère occupe une case numérotée. La numérotation commence à <strong>0</strong>.</p>
+
+  <div class="sim">
+    <div class="simhead">
+      <label for="b0src">ch =</label>
+      <input id="b0src" value="TUNISIE" maxlength="16" spellcheck="false" autocomplete="off">
+    </div>
+    <div class="stripwrap"><div class="cells" id="b0cells"></div></div>
+    <div class="state">
+      <button class="reg act" id="b0bLen"><span>Long(ch) =</span> <b id="b0len">7</b></button>
+      <button class="reg act" id="b0bFirst"><span>ch[0] =</span> <b id="b0first">"T"</b></button>
+      <button class="reg act" id="b0bLast"><span>ch[Long(ch)-1] =</span> <b id="b0last">"E"</b></button>
+    </div>
+    <p class="mono" style="font-size:.85em;color:var(--ink-soft);margin:.2rem 0 0">Cliquez sur une case ci-dessus.</p>
+  </div>
+
+  <div class="note warn">
+    <span class="tag">Attention à la dernière case</span>
+    <span class="mono">Long(ch)</span> compte les caractères ; le dernier indice vaut <span class="mono">Long(ch)-1</span>. Écrire <span class="mono">ch[Long(ch)]</span>, c'est désigner une case qui n'existe pas.
+  </div>
+
+  <p class="detail"><span class="mono">Long(ch)</span> compte aussi les espaces. La chaîne vide <span class="mono">""</span> a une longueur de 0.</p>
+</section>
+
+<!-- 1 -->
+<section data-title="Concaténer">
+  <div class="eyebrow">Partie 0 · Connaître</div>
+  <h1>La concaténation et l'accumulation</h1>
+  <pre class="algo" id="algoConcat">res ← ""
+<b>Pour</b> i de 0 à Long(ch)-1 <b>Faire</b>
+    res ← res + ch[i]
+<b>Fin Pour</b></pre>
+
+  <div id="animConcat"></div>
+
+  <div class="note">
+    <span class="tag">Comparer les deux ordres</span>
+    Basculez le bouton : <span class="mono">res + ch[i]</span> recopie, <span class="mono">ch[i] + res</span> inverse. Même boucle, résultat opposé.
+  </div>
+  <p class="detail">On part toujours de <span class="mono">res ← ""</span> : la chaîne vide est le zéro de la concaténation, comme 0 l'est pour l'addition. Et il n'existe pas d'opérateur <span class="mono">−</span> sur les chaînes — pour retirer, il faudra <span class="mono">Effacer</span>.</p>
+  <p class="detail">Pour coller un nombre à une chaîne, il faut le convertir d'abord : <span class="mono">"Note : " + Convch(15)</span>.</p>
+</section>
+
+<!-- 2 -->
+<section data-title="Pos">
+  <div class="eyebrow">Partie 0 · Connaître</div>
+  <h1>La fonction <span class="mono">Pos</span> : rechercher une position</h1>
+  <p class="lead">Le <strong>premier</strong> paramètre est la chaîne recherchée, le <strong>second</strong> la chaîne dans laquelle on cherche. La fonction rend un <strong>indice</strong>.</p>
+
+  <div id="animPos"></div>
+
+  <div class="note warn">
+    <span class="tag">Deux erreurs fréquentes</span>
+    <strong>0 est une position valide</strong> — on teste <span class="mono">Pos(…) ≠ -1</span>, jamais <span class="mono">Pos(…) &gt; 0</span>. Et <span class="mono">Pos</span> rend un <strong>entier</strong>, jamais un booléen.
+  </div>
+
+  <p class="detail">Essayez <span class="mono">Pos("Z", "NABEUL")</span> : aucune fenêtre ne correspond, la fonction rend <span class="mono">-1</span>. Essayez <span class="mono">Pos("N", "NABEUL")</span> : elle rend <span class="mono">0</span> dès la première comparaison — d'où le piège.</p>
+  <p class="detail">Conséquence utile : <span class="mono">Pos(ch[i], ch) = i</span> signifie « ce caractère n'est jamais apparu avant l'indice i ». C'est le test des caractères distincts, en une ligne.</p>
+</section>
+
+<!-- 3 -->
+<section data-title="Convertir">
+  <div class="eyebrow">Partie 0 · Connaître</div>
+  <h1>Les fonctions de conversion</h1>
+
+  <div class="grid3">
+    <div class="panel">
+      <h2 style="margin-top:0"><span class="mono">Convch(x)</span></h2>
+      <p class="pt">nombre <b>→</b> chaîne</p>
+      <pre class="algo">Convch(2026) → "2026"
+Convch(17.2) → "17.2"</pre>
+    </div>
+    <div class="panel">
+      <h2 style="margin-top:0"><span class="mono">Valeur(ch)</span></h2>
+      <p class="pt">chaîne <b>→</b> nombre</p>
+      <pre class="algo">Valeur("26")  → 26
+Valeur("2")+1 → 3</pre>
+    </div>
+    <div class="panel">
+      <h2 style="margin-top:0"><span class="mono">Estnum(ch)</span></h2>
+      <p class="pt">chaîne <b>→</b> booléen</p>
+      <pre class="algo">Estnum("26")   → Vrai
+Estnum("-7")   → Faux
+Estnum("12.5") → Faux</pre>
+    </div>
+  </div>
+
+  <h2>Atteindre les chiffres d'un entier</h2>
+  <p>Un nombre n'a pas d'indices. On le convertit en chaîne, et chaque chiffre devient une case.</p>
+  <pre class="algo"><i>somme des chiffres de n</i>
+m ← Convch(n)
+s ← 0
+<b>Pour</b> i de 0 à Long(m)-1 <b>Faire</b>
+    s ← s + Valeur(m[i])
+<b>Fin Pour</b></pre>
+
+  <div class="note warn">
+    <span class="tag">Estnum n'accepte que des chiffres</span>
+    Ni signe, ni point décimal, ni chaîne vide. On l'appelle <strong>avant</strong> <span class="mono">Valeur</span>, jamais après : c'est le garde-fou.
+  </div>
+</section>
+
+<!-- 4 -->
+<section data-title="Caractères">
+  <div class="eyebrow">Partie 0 · Connaître</div>
+  <h1>Les fonctions sur le type caractère</h1>
+
+  <pre class="algo">Ord("A") → 65      Ord("a") → 97      Ord("0") → 48
+Ord("Z") → 90      Ord("z") → 122
+
+Chr(70)  → "F"     Chr(Ord("A") + 5) → "F"</pre>
+
+  <div class="grid3">
+    <div class="panel">
+      <h2 style="margin-top:0">L'écart de 32</h2>
+      <p style="margin:0">Entre une majuscule et sa minuscule : toujours <strong>32</strong>.</p>
+    </div>
+    <div class="panel">
+      <h2 style="margin-top:0">Lettre aléatoire</h2>
+      <p style="margin:0"><span class="mono">c ← Chr(Aléa(65, 90))</span></p>
+    </div>
+    <div class="panel">
+      <h2 style="margin-top:0">Décalage de César</h2>
+      <p style="margin:0"><span class="mono">c ← Chr(Ord(c) + 3)</span></p>
+    </div>
+  </div>
+
+  <pre class="algo">Majus("a") → "A"      Majus("A") → "A"      Majus("9") → "9"
+Majus("menzel temime") → "MENZEL TEMIME"</pre>
+
+  <div class="note">
+    <span class="tag">Majus ne modifie rien</span>
+    <span class="mono">Majus(ch)</span> rend une <strong>copie</strong> en majuscules. Tant qu'on n'écrit pas <span class="mono">ch ← Majus(ch)</span>, la chaîne garde sa casse d'origine.
+  </div>
+</section>
+
+<!-- 5 -->
+<section data-title="Quiz A">
+  <div class="eyebrow">Partie 0 · Premier contrôle</div>
+  <h1>Évaluation 1 — Les fonctions de base</h1>
+  <p class="lead detail">Sur tout ce qui précède : indices, <span class="mono">Long</span>, <span class="mono">Pos</span>, conversions, ASCII.</p>
+  <div id="quizA"></div>
+</section>
+
+<!-- 6 -->
+<section data-title="Sous_chaine">
+  <div class="eyebrow">Partie 0 · Connaître</div>
+  <h1>La fonction <span class="mono">Sous_chaine</span></h1>
+  <p class="lead">Déplacez les deux bornes. <strong>f n'est jamais prise</strong> : elle marque où l'on s'arrête.</p>
+  <div id="bancSous"></div>
+</section>
+
+<!-- 7 -->
+<section data-title="Effacer">
+  <div class="eyebrow">Partie 0 · Connaître</div>
+  <h1>La fonction <span class="mono">Effacer</span></h1>
+  <p class="lead">Mêmes bornes, résultat inverse. La fonction ne rend pas ce qu'elle enlève, elle rend <strong>ce qui reste</strong>.</p>
+  <div id="bancEff"></div>
+</section>
+
+<!-- 8 -->
+<section data-title="L'invariant">
+  <div class="eyebrow">Partie 0 · Connaître</div>
+  <h1><span class="mono">Sous_chaine</span> et <span class="mono">Effacer</span> : deux résultats complémentaires</h1>
+  <p class="lead">Les mêmes bornes séparent la chaîne en trois morceaux. <span class="mono">Sous_chaine</span> prend celui du milieu, <span class="mono">Effacer</span> prend les deux autres.</p>
+  <div id="bancBoth"></div>
+  <pre class="algo"><b>Effacer</b>(ch, d, f)  =  <b>Sous_chaine</b>(ch, 0, d) + <b>Sous_chaine</b>(ch, f, Long(ch))</pre>
+  <div class="note detail">
+    <span class="tag">À retenir pour la suite</span>
+    Trois cas suffisent à tout faire : <span class="mono">Sous_chaine(ch, 0, k)</span> = le début · <span class="mono">Sous_chaine(ch, k, Long(ch))</span> = la fin · <span class="mono">Effacer(ch, 0, k)</span> = la fin, encore. En séance 4, <span class="mono">k</span> ne sera plus un nombre écrit à la main : ce sera <span class="mono">Pos(sep, ch)</span>.
+  </div>
+</section>
+
+<!-- 9 -->
+<section data-title="Quiz B">
+  <div class="eyebrow">Partie 0 · Second contrôle</div>
+  <h1>Évaluation 2 — <span class="mono">Sous_chaine</span> et <span class="mono">Effacer</span></h1>
+  <p class="lead detail">Uniquement <span class="mono">Sous_chaine</span> et <span class="mono">Effacer</span> — là où se perdent le plus de points au Bac.</p>
+  <div id="quizB"></div>
+</section>
+
+<!-- 10 -->
+<section data-title="Récapitulatif">
+  <div class="eyebrow">Partie 0 · Connaître</div>
+  <h1>Récapitulatif des fonctions prédéfinies</h1>
+  <table class="cmp">
+    <thead><tr><th>Appel</th><th>Rend</th><th>À ne pas oublier</th></tr></thead>
+    <tbody>
+      <tr><td><code>Long(ch)</code></td><td>Entier</td><td>dernier indice = <code>Long(ch)-1</code></td></tr>
+      <tr><td><code>Pos(ch1,ch2)</code></td><td>Entier</td><td><code>-1</code> si absent · <code>0</code> est valide</td></tr>
+      <tr><td><code>Convch(x)</code></td><td>Chaîne</td><td>pour atteindre les chiffres d'un nombre</td></tr>
+      <tr><td><code>Valeur(ch)</code></td><td>Nombre</td><td>à protéger par <code>Estnum</code></td></tr>
+      <tr><td><code>Estnum(ch)</code></td><td>Booléen</td><td>chiffres seulement : ni signe, ni point</td></tr>
+      <tr><td><code>Sous_chaine(ch,d,f)</code></td><td>Chaîne</td><td><code>f</code> exclue</td></tr>
+      <tr><td><code>Effacer(ch,d,f)</code></td><td>Chaîne</td><td>rend ce qui <strong>reste</strong></td></tr>
+      <tr><td><code>Majus(ch)</code></td><td>Chaîne</td><td>rend une copie, ne modifie pas <code>ch</code></td></tr>
+    </tbody>
+  </table>
+  <p class="detail">Deux fonctions de plus, sur le type caractère : <span class="mono">Ord(c)</span> rend le code ASCII, <span class="mono">Chr(d)</span> fait l'inverse.</p>
+  <div class="note">
+    <span class="tag">Et maintenant</span>
+    Ces huit fonctions servent d'abord à <strong>contrôler une saisie</strong>. C'est l'objet de la partie suivante.
+  </div>
+</section>
+
+
+<section class="sep" data-title="Partie 1">
+  <div class="pnum">1</div>
+  <div class="eyebrow">Partie 1</div>
+  <h1>Contrôler la saisie d'une chaîne</h1>
+  <p class="lead">Comment refuser une chaîne qui ne respecte pas les contraintes de l'énoncé, et redemander jusqu'à ce qu'elle soit correcte.</p>
+  <div class="steps"><span>Répéter … Jusqu'à</span><span>fonction booléenne</span><span>drapeau</span><span>parcours</span></div>
+</section>
+
+<!-- ══════════════ 0 ══════════════ -->
+<section data-title="Le mur">
+  <div class="eyebrow">Partie 1 · Valider</div>
+  <h1>Les limites du contrôle direct</h1>
+  <p class="lead">Tant que le nombre de tests est connu d'avance, tout tient dans le <span class="mono">Jusqu'à</span>.</p>
+
+  <pre class="algo"><b>Répéter</b>
+    Écrire("Donner une référence : ")
+    Lire(ch)
+<b>Jusqu'à</b> (ch[0] ∈ ["A".."Z"]) <b>Et</b> (ch[Long(ch)-1] = ".")</pre>
+
+  <div class="note warn">
+    <span class="tag">Nouvelle exigence : tous les caractères en majuscules</span>
+    Il faudrait autant de tests que la chaîne a de caractères — et <span class="mono">Long(ch)</span> n'est pas connu au moment où l'on écrit l'algorithme. Il faut donc une <strong>boucle</strong> ; or une boucle ne s'écrit pas dans un <span class="mono">Jusqu'à</span>, qui attend une condition.
+  </div>
+
+  <pre class="algo"><i>la solution : déporter le parcours dans une fonction booléenne</i>
+<b>Jusqu'à</b> Verif_Maj(ch)</pre>
+</section>
+
+<!-- ══════════════ 1 ══════════════ -->
+<section data-title="Le drapeau">
+  <div class="eyebrow">Partie 1 · Valider</div>
+  <h1>Le principe du drapeau booléen</h1>
+
+  <p class="lead">La fonction doit répondre <span class="mono">Vrai</span> ou <span class="mono">Faux</span>. Trois décisions à prendre.</p>
+
+  <div class="grid2">
+    <div class="panel">
+      <h2 style="margin-top:0">1 · Par quoi commencer ?</h2>
+      <p style="margin:0">Par <strong>l'optimisme</strong> : <span class="mono">ok ← Vrai</span>. On suppose la chaîne correcte, puis on cherche à se faire contredire. Un seul intrus suffit à faire tomber le drapeau.</p>
+    </div>
+    <div class="panel">
+      <h2 style="margin-top:0">2 · Quelle boucle ?</h2>
+      <p style="margin:0">On veut <strong>s'arrêter dès le premier intrus</strong> : inutile de lire la fin d'une chaîne déjà refusée. Le nombre de tours n'est donc pas connu → <span class="mono">Tant que</span>, avec le drapeau dans la condition.</p>
+    </div>
+    <div class="panel">
+      <h2 style="margin-top:0">3 · Comment avancer ?</h2>
+      <p style="margin:0">Si le caractère convient, on passe au suivant : <span class="mono">i ← i + 1</span>. Sinon, on baisse le drapeau : <span class="mono">ok ← Faux</span>. <strong>Jamais les deux</strong> — c'est un <span class="mono">Si … Sinon</span>.</p>
+    </div>
+  </div>
+
+  <div class="note detail">
+    <span class="tag">Pourquoi jamais les deux</span>
+    Si on incrémentait <span class="mono">i</span> aussi dans le cas d'échec, la boucle continuerait à avancer alors que la réponse est déjà connue. Le drapeau baissé arrête le parcours <strong>et</strong> fige l'indice sur le caractère fautif.
+  </div>
+
+  <p>Ce qu'il ne faut surtout pas écrire à la place : un <span class="mono">break</span>, ou un <span class="mono">Retourner</span> à l'intérieur de la boucle. Le drapeau <em>est</em> la sortie propre.</p>
+</section>
+
+<!-- ══════════════ 2 · SIMULATEUR ══════════════ -->
+<section data-title="Simulation">
+  <div class="eyebrow">Partie 1 · Valider</div>
+  <h1>Simulation du parcours de vérification</h1>
+  <p class="lead">Saisissez une chaîne, puis avancez pas à pas. Un clic = un tour de boucle.</p>
+
+  <div class="sim">
+    <div class="simhead">
+      <label for="src">ch =</label>
+      <input id="src" value="TUNIS" maxlength="18" spellcheck="false" autocomplete="off">
+      <span class="reg"><span>Long(ch) =</span> <b id="len">5</b></span>
+    </div>
+
+    <div class="chips" id="chips"></div>
+
+    <div class="stripwrap"><div class="cells" id="cells">
+      <svg class="bee" id="bee" viewBox="0 0 72 50" aria-hidden="true">
+        <ellipse class="wing" cx="26" cy="16" rx="13" ry="8" fill="#bfdcf2" opacity=".8"/>
+        <ellipse class="wing" cx="41" cy="14" rx="11" ry="7" fill="#bfdcf2" opacity=".8"/>
+        <clipPath id="beebody"><ellipse cx="32" cy="31" rx="19" ry="12.5"/></clipPath>
+        <ellipse cx="32" cy="31" rx="19" ry="12.5" fill="#e8a33d"/>
+        <g clip-path="url(#beebody)" fill="#2a2118">
+          <rect x="20" y="18" width="6" height="26"/>
+          <rect x="32" y="18" width="6" height="26"/>
+          <rect x="44" y="18" width="6" height="26"/>
+        </g>
+        <circle cx="55" cy="28" r="8" fill="#2a2118"/>
+        <circle cx="58" cy="26" r="2.1" fill="#fff"/>
+        <path d="M53 21 L50 13 M58 21 L61 14" stroke="#2a2118" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <circle cx="50" cy="12" r="2" fill="#2a2118"/><circle cx="62" cy="13" r="2" fill="#2a2118"/>
+      </svg>
+    </div></div>
+
+    <div class="state">
+      <span class="reg"><span>i =</span> <b id="regI">0</b></span>
+      <span class="reg"><span>ok =</span> <b id="regOk" class="t">Vrai</b></span>
+      <span class="reg"><span>condition =</span> <b id="regCond">—</b></span>
+    </div>
+
+    <div class="log" id="log" aria-live="polite"></div>
+
+    <div class="simbtns">
+      <button class="btn" id="step">Pas suivant</button>
+      <button class="btn ghost" id="all">Exécuter jusqu'au bout</button>
+      <button class="btn ghost" id="reset">Recommencer</button>
+    </div>
+
+    <div class="verdict" id="verdict"></div>
+  </div>
+
+  <div class="note detail">
+    <span class="tag">À observer</span>
+    Sur une chaîne refusée, l'indice <span class="mono">i</span> <strong>reste bloqué</strong> sur le caractère fautif. Sur une chaîne acceptée, <span class="mono">i</span> atteint <span class="mono">Long(ch)</span> — une position qui <strong>n'existe pas</strong> dans la chaîne. C'est normal : c'est la condition d'arrêt, pas un accès.
+  </div>
+</section>
+
+<!-- ══════════════ 3 ══════════════ -->
+<section data-title="Algorithme">
+  <div class="eyebrow">Partie 1 · Valider</div>
+  <h1>L'algorithme complet</h1>
+  <p class="lead">La procédure redemande, la fonction vérifie. On écrit d'abord celui qui appelle.</p>
+
+  <div class="algoblock">
+    <pre class="algo"><b>Procédure</b> Saisir (@ch : Chaîne de caractères)
+<b>DEBUT</b>
+    <b>Répéter</b>
+        Écrire("Donner un code en majuscules : ")
+        Lire(ch)
+    <b>Jusqu'à</b> (Long(ch) ≥ 1) <b>Et</b> Verif_Maj(ch)
+<b>FIN</b></pre>
+    <table class="tdo">
+      <caption>T.D.O.L de Saisir</caption>
+      <tr><th>Objet</th><th>Type / Nature</th></tr>
+      <tr><td>Verif_Maj</td><td>Fonction</td></tr>
+    </table>
+  </div>
+
+  <div class="seg" id="segVerif"><button class="on" data-v="ok">avec drapeau</button><button data-v="noflag">sans drapeau</button></div>
+
+  <div class="algoblock">
+    <pre class="algo" id="algoVerif"></pre>
+    <table class="tdo" id="tdoVerif"></table>
+  </div>
+
+  <div class="note" id="noteVerif"></div>
+</section>
+
+<!-- ══════════════ 3 bis ══════════════ -->
+<!-- ══════════════ 4 ══════════════ -->
+<section data-title="Piège">
+  <div class="eyebrow">Partie 1 · Valider</div>
+  <h1>Cas particulier : la chaîne vide</h1>
+
+  <p class="lead">Testez <span class="mono">ch = ""</span> dans la simulation. La fonction répond <span class="mono">Vrai</span>.</p>
+
+  <pre class="algo">ch ← ""     →   Long(ch) = 0
+                <b>Tant que</b> (0 &lt; 0) <b>Et</b> Vrai   →   <i>Faux dès le départ</i>
+                le corps de la boucle n'est <b>jamais</b> exécuté
+                <b>Retourner</b> ok    →   ok vaut toujours <i>Vrai</i></pre>
+
+  <p class="detail">Ce n'est pas un bug de l'algorithme : la fonction répond exactement à la question posée. « Tous les caractères sont-ils des majuscules ? » — sur zéro caractère, il n'y a aucun contre-exemple. La réponse <span class="mono">Vrai</span> est logiquement correcte.</p>
+
+  <div class="note warn">
+    <span class="tag">La règle</span>
+    Une vérification « <strong>tous les caractères sont…</strong> » accepte toujours la chaîne vide. Si la chaîne vide n'est pas acceptable, c'est au <strong>contrôle de saisie</strong> de l'écarter — pas à la fonction.
+  </div>
+
+  <pre class="algo"><b>Jusqu'à</b> (Long(ch) ≥ 1) <b>Et</b> Verif_Maj(ch)</pre>
+
+  <p class="detail">Le même raisonnement vaut pour une longueur imposée. Un code d'agence de trois lettres : <span class="mono">(Long(ch) = 3) Et Verif_Maj(ch)</span>. La fonction reste inchangée — on ne la modifie pas pour chaque cas particulier, on <strong>compose</strong> les conditions dans le <span class="mono">Jusqu'à</span>.</p>
+</section>
+
+<!-- ══════════════ 5 ══════════════ -->
+<section data-title="Adapter">
+  <div class="eyebrow">Partie 1 · Valider</div>
+  <h1>Adapter la condition de vérification</h1>
+  <p class="lead">Le squelette ne bouge jamais. <strong>Une seule ligne change</strong> — celle du <span class="mono">Si</span>.</p>
+
+  <div class="seg wrapseg" id="segCond"><button class="on" data-c="maj">majuscules</button><button data-c="min">minuscules</button><button data-c="let">lettres</button><button data-c="lesp">lettres + espaces</button><button data-c="dist">distincts</button></div>
+
+  <pre class="algo" id="algoCond" style="margin-top:.8rem"></pre>
+  <div class="note" id="noteCond"></div>
+</section>
+
+<!-- ══════════════ 6 ══════════════ -->
+<section data-title="Deux familles">
+  <div class="eyebrow">Partie 1 · Valider</div>
+  <h1>Deux familles de vérification</h1>
+  <p class="lead">Une seule question les sépare : <strong>peut-on conclure avant la fin de la chaîne ?</strong></p>
+
+  <div class="grid2">
+    <div class="panel">
+      <h2 style="margin-top:0">« Que des majuscules »</h2>
+      <p class="pt">Le premier intrus tranche → arrêt anticipé</p>
+      <pre class="algo">ok ← Vrai
+<b>Tant que</b> (i &lt; Long(ch)) <b>Et</b> ok <b>Faire</b>
+    …
+<b>Retourner</b> ok</pre>
+      <p style="margin:.6rem 0 0">On accumule <strong>un booléen</strong> : le résultat est déjà dans le drapeau.</p>
+    </div>
+    <div class="panel">
+      <h2 style="margin-top:0">« Au moins un de chaque »</h2>
+      <p class="pt">La preuve peut être au dernier caractère → parcours complet</p>
+      <pre class="algo">nbmaj ← 0  …  nbsym ← 0
+<b>Pour</b> i de 0 à Long(ch)-1 <b>Faire</b>
+    …
+<b>Retourner</b> (nbmaj ≥ 1) <b>Et</b> …</pre>
+      <p style="margin:.6rem 0 0">On accumule <strong>des compteurs</strong> : le verdict se construit après la boucle.</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="tag">Ce n'est pas une règle de plus</span>
+    C'est toujours la même : <span class="mono">Pour</span> quand le nombre de tours est connu, <span class="mono">Tant que</span> quand il ne l'est pas. « Aller jusqu'au bout » signifie exactement <span class="mono">Long(ch)</span> tours.
+  </div>
+</section>
+
+<section class="sep" data-title="Partie 2">
+  <div class="pnum">2</div>
+  <div class="eyebrow">Partie 2</div>
+  <h1>Découper une chaîne en blocs</h1>
+  <p class="lead">Extraire les mots d'une phrase, les termes d'une opération, les champs d'un enregistrement — un bloc à la fois.</p>
+  <div class="steps"><span>séparateur</span><span>Pos</span><span>Sous_chaine</span><span>Effacer</span><span>Tant que</span></div>
+</section>
+
+<!-- P2-A -->
+<section data-title="Un bloc">
+  <div class="eyebrow">Partie 2 · Découper</div>
+  <h1>Extraire le premier bloc</h1>
+  <p class="lead">La borne n'est plus un nombre écrit à la main : c'est la position du séparateur.</p>
+
+  <pre class="algo">ch = "ALI BEN SALAH"        sep = " "
+
+Pos(sep, ch)                     → 3
+<b>Sous_chaine</b>(ch, 0, Pos(sep, ch))  → "ALI"
+<b>Effacer</b>(ch, 0, Pos(sep, ch) + 1)  → "BEN SALAH"</pre>
+
+  <div class="note">
+    <span class="tag">Le résultat d'une fonction devient l'argument d'une autre</span>
+    <span class="mono">Pos</span> calcule <em>où</em> couper, <span class="mono">Sous_chaine</span> prend le bloc, <span class="mono">Effacer</span> retire le bloc <strong>et son séparateur</strong> : c'est le rôle du <span class="mono">+ 1</span>. Sans lui, le séparateur resterait en tête et le bloc suivant serait vide.
+  </div>
+
+</section>
+
+<!-- P2-B -->
+<section data-title="Machine">
+  <div class="eyebrow">Partie 2 · Découper</div>
+  <h1>Le parcours par blocs</h1>
+  <p class="lead">On ne connaît pas le nombre de mots à l'avance. La chaîne est donc <strong>consommée</strong> jusqu'à devenir vide.</p>
+  <div id="animBloc"></div>
+</section>
+
+<!-- P2-C -->
+<section data-title="Algorithme blocs">
+  <div class="eyebrow">Partie 2 · Découper</div>
+  <h1>L'algorithme du parcours par blocs</h1>
+
+  <div class="algoblock">
+    <pre class="algo"><b>Procédure</b> Ranger (ch : Chaîne de caractères, @T : Tab, @n : Entier)
+<b>DEBUT</b>
+    ch ← ch + " "
+    n ← 0
+    <b>Tant que</b> ch ≠ "" <b>Faire</b>
+        p    ← Pos(" ", ch)
+        T[n] ← Sous_chaine(ch, 0, p)
+        n    ← n + 1
+        ch   ← Effacer(ch, 0, p + 1)
+    <b>Fin Tant que</b>
+<b>FIN</b></pre>
+    <table class="tdo">
+      <caption>T.D.O.L de Ranger</caption>
+      <tr><th>Objet</th><th>Type / Nature</th></tr>
+      <tr><td>p</td><td>Entier</td></tr>
+    </table>
+  </div>
+
+  <div class="note">
+    <span class="tag">Le rôle du séparateur ajouté</span>
+    <span class="mono">ch ← ch + " "</span> donne un séparateur au <strong>dernier</strong> mot. Sans lui, <span class="mono">Pos(" ", ch)</span> rendrait <span class="mono">-1</span> au dernier tour et le mot serait perdu.
+  </div>
+
+  <p class="detail">Le paramètre <span class="mono">ch</span> est passé <strong>par valeur</strong> : la procédure travaille sur une copie et peut la détruire sans abîmer la chaîne du programme appelant.</p>
+</section>
+
+<!-- P2-D -->
+<section data-title="Deux parcours">
+  <div class="eyebrow">Partie 2 · Découper</div>
+  <h1>Deux parcours à ne pas confondre</h1>
+
+  <table class="cmp">
+    <thead><tr><th></th><th>Parcours indicé</th><th>Parcours par blocs</th></tr></thead>
+    <tbody>
+      <tr><td>Unité</td><td>un caractère</td><td>un mot, un champ</td></tr>
+      <tr><td>Nombre de tours</td><td><code>Long(ch)</code> — connu</td><td>inconnu à l'avance</td></tr>
+      <tr><td>Structure</td><td><code>Pour</code></td><td><code>Tant que</code></td></tr>
+      <tr><td>Ce qui avance</td><td>l'indice <code>i</code></td><td>la chaîne <code>ch</code> elle-même</td></tr>
+      <tr><td><code>ch</code> est modifiée ?</td><td>non</td><td><strong>oui, elle rétrécit</strong></td></tr>
+      <tr><td>Arrêt</td><td><code>i</code> atteint <code>Long(ch)</code></td><td><code>ch = ""</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="note warn">
+    <span class="tag">Pourquoi il faut valider avant de découper</span>
+    Un espace en tête produit un premier bloc vide. Deux espaces consécutifs produisent un bloc vide au milieu. Le contrôle de saisie de la Partie 1 n'est pas une formalité : il garantit que le découpage n'aura <strong>aucun cas particulier</strong> à traiter.
+  </div>
+</section>
+
+</main>
+<nav class="footnav" aria-label="Navigation">
+  <button class="nav" id="prev">← Précédent</button>
+  <span class="pos" id="pos"></span>
+  <button class="nav" id="next">Suivant →</button>
+</nav>
+
+
+<script>
+/* ============================================================
+   MOTEUR DE NAVIGATION
+   ============================================================ */
+(function(){
+  var deck = document.getElementById('deck');
+  var sections = Array.prototype.slice.call(deck.querySelectorAll('section'));
+  var strip = document.getElementById('strip');
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var pos  = document.getElementById('pos');
+  var cur = 0;
+
+  sections.forEach(function(s,i){
+    var b = document.createElement('button');
+    b.textContent = i;
+    b.title = s.dataset.title || ('Section ' + i);
+    b.addEventListener('click', function(){ go(i); });
+    strip.appendChild(b);
+  });
+
+  function go(i){
+    if(i < 0 || i >= sections.length) return;
+    sections[cur].removeAttribute('data-active');
+    cur = i;
+    sections[cur].setAttribute('data-active','');
+    Array.prototype.forEach.call(strip.children, function(b,k){
+      b.setAttribute('aria-current', k === cur ? 'true' : 'false');
+    });
+    prev.disabled = (cur === 0);
+    next.disabled = (cur === sections.length - 1);
+    pos.textContent = cur + ' / ' + (sections.length - 1) + ' · ' + (sections[cur].dataset.title || '');
+    window.scrollTo({top:0, behavior:'instant'});
+  }
+
+  prev.addEventListener('click', function(){ go(cur - 1); });
+  next.addEventListener('click', function(){ go(cur + 1); });
+
+  document.addEventListener('keydown', function(e){
+    if(/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
+    if(e.key === 'ArrowRight' || e.key === 'PageDown'){ go(cur+1); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ go(cur-1); }
+    else if(e.key === 'Home'){ go(0); }
+    else if(e.key === 'End'){ go(sections.length-1); }
+    else if(e.key === 'p' || e.key === 'P'){ toggleMode(); }
+    else if(e.key === 'f' || e.key === 'F'){ toggleFull(); }
+    else if(e.key === '+' || e.key === '='){ zoom(0.1); }
+    else if(e.key === '-' || e.key === '_'){ zoom(-0.1); }
+  });
+
+  /* ---- mode projection / lecture : ?mode=projection dans l'URL ---- */
+  var modeBtn = document.getElementById('mode');
+  function setMode(m){
+    document.documentElement.dataset.mode = m;
+    modeBtn.textContent = (m === 'projection') ? 'PROJECTION' : 'LECTURE';
+  }
+  function toggleMode(){
+    setMode(document.documentElement.dataset.mode === 'projection' ? 'lecture' : 'projection');
+  }
+  modeBtn.addEventListener('click', toggleMode);
+  setMode(/[?&]mode=projection/.test(location.search) ? 'projection' : 'lecture');
+
+  /* ---- plein écran ---- */
+  function toggleFull(){
+    if(document.fullscreenElement){ document.exitFullscreen(); }
+    else if(document.documentElement.requestFullscreen){ document.documentElement.requestFullscreen(); }
+  }
+  document.getElementById('full').addEventListener('click', toggleFull);
+
+  /* ---- zoom ---- */
+  var z = 1;
+  function zoom(d){
+    z = Math.min(1.8, Math.max(0.7, Math.round((z + d) * 10) / 10));
+    document.documentElement.style.setProperty('--zoom', z);
+  }
+  document.getElementById('zoomIn').addEventListener('click', function(){ zoom(0.1); });
+  document.getElementById('zoomOut').addEventListener('click', function(){ zoom(-0.1); });
+
+  /* balayage tactile */
+  var x0 = null, y0 = null;
+  document.addEventListener('touchstart', function(e){
+    x0 = e.changedTouches[0].clientX; y0 = e.changedTouches[0].clientY;
+  }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if(x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    var dy = e.changedTouches[0].clientY - y0;
+    if(Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.6){ go(dx < 0 ? cur+1 : cur-1); }
+    x0 = null;
+  }, {passive:true});
+
+  /* contraste */
+  var themeBtn = document.getElementById('theme');
+  themeBtn.addEventListener('click', function(){
+    var d = document.documentElement;
+    d.dataset.theme = (d.dataset.theme === 'dark') ? 'light' : 'dark';
+  });
+
+  go(0);
+})();
+
+
+/* ============================================================
+   BANDE INDICÉE — composant réutilisable
+   ============================================================ */
+function bandeIndicee(host, ch, opts){
+  opts = opts || {};
+  var wrap = document.createElement('div'); wrap.className = 'stripwrap';
+  var row  = document.createElement('div'); row.className = 'cells';
+  if(opts.mini) row.classList.add('mini');
+  var boxes = [];
+  for(var j = 0; j < ch.length; j++){
+    var b = document.createElement('div'); b.className = 'cellbox';
+    if(opts.marks){ var m = document.createElement('div'); m.className='mark'; b.appendChild(m); }
+    var c = document.createElement('div'); c.className = 'ch';
+    if(ch[j] === ' ') b.setAttribute('data-space',''); else c.textContent = ch[j];
+    var x = document.createElement('div'); x.className = 'ix'; x.textContent = j;
+    b.appendChild(c); b.appendChild(x); row.appendChild(b); boxes.push(b);
+  }
+  if(opts.ghost){
+    var g = document.createElement('div'); g.className = 'cellbox ghost';
+    if(opts.marks){ var gm = document.createElement('div'); gm.className='mark'; g.appendChild(gm); }
+    var gc = document.createElement('div'); gc.className = 'ch';
+    var gx = document.createElement('div'); gx.className = 'ix'; gx.textContent = ch.length;
+    g.appendChild(gc); g.appendChild(gx); row.appendChild(g); boxes.push(g);
+  }
+  wrap.appendChild(row); host.appendChild(wrap);
+  return boxes;
+}
+
+/* ============================================================
+   ÉCRAN 0 — bande vivante
+   ============================================================ */
+(function(){
+  var src = document.getElementById('b0src'), host = document.getElementById('b0cells');
+  var L = document.getElementById('b0len'), F = document.getElementById('b0first'), D = document.getElementById('b0last');
+  function draw(){
+    var ch = src.value;
+    host.innerHTML = '';
+    if(ch.length === 0){
+      host.innerHTML = '<div class="mono" style="color:var(--ink-soft);padding:.9rem 0">ch = ""  \u2192  aucune case</div>';
+      L.textContent = 0; F.textContent = 'n\'existe pas'; D.textContent = 'n\'existe pas';
+      return;
+    }
+    var bx = bandeIndicee(host, ch, {});
+    if(window.__b0register) window.__b0register(bx, host);
+    L.textContent = ch.length;
+    F.textContent = '"' + ch[0] + '"';
+    D.textContent = '"' + ch[ch.length-1] + '"';
+  }
+  src.addEventListener('input', draw);
+  draw();
+})();
+
+/* ============================================================
+   BANC D'ESSAI — Sous_chaine / Effacer avec bornes déplaçables
+   ============================================================ */
+function banc(hostId, kind){
+  var host = document.getElementById(hostId);
+  host.className = 'sim';
+  host.innerHTML =
+    '<div class="simhead">'
+    + '<label>ch =</label><input class="bsrc" value="PYTHON" maxlength="14" spellcheck="false" autocomplete="off">'
+    + '</div>'
+    + '<div class="bornes">'
+    +   '<label>d = <b class="bd">0</b></label><input type="range" class="rd" min="0" value="0">'
+    +   '<label>f = <b class="bf">3</b></label><input type="range" class="rf" min="0" value="3">'
+    + '</div>'
+    + '<div class="bcells"></div>'
+    + '<div class="bres"></div>';
+
+  var src = host.querySelector('.bsrc'), rd = host.querySelector('.rd'), rf = host.querySelector('.rf'),
+      bd = host.querySelector('.bd'), bf = host.querySelector('.bf'),
+      cellsHost = host.querySelector('.bcells'), res = host.querySelector('.bres');
+
+  function draw(){
+    var ch = src.value, L = ch.length;
+    rd.max = L; rf.max = L;
+    var d = Math.min(+rd.value, L), f = Math.min(+rf.value, L);
+    if(f < d){ f = d; rf.value = f; }
+    rd.value = d;
+    bd.textContent = d; bf.textContent = f;
+
+    cellsHost.innerHTML = '';
+    var boxes = bandeIndicee(cellsHost, ch, {ghost:true, marks:true});
+    for(var j = 0; j < ch.length; j++){
+      var dedans = (j >= d && j < f);
+      if(kind === 'eff'){ boxes[j].setAttribute('data-part', dedans ? 'cut' : 'keep'); }
+      else { boxes[j].setAttribute('data-part', dedans ? 'take' : 'out'); }
+    }
+    if(boxes[d]) boxes[d].querySelector('.mark').innerHTML = '<i class="md">d</i>';
+    if(boxes[f]) boxes[f].querySelector('.mark').innerHTML =
+        (f === d ? boxes[f].querySelector('.mark').innerHTML : '') + '<i class="mf">f</i>';
+
+    var sous = ch.slice(d, f), eff = ch.slice(0, d) + ch.slice(f);
+    var out = '';
+    if(kind !== 'eff') out += '<div class="line"><span>Sous_chaine(ch, '+d+', '+f+')</span> = <b>"'+sous+'"</b></div>';
+    if(kind !== 'sous') out += '<div class="line"><span>Effacer(ch, '+d+', '+f+')</span> = <b>"'+eff+'"</b></div>';
+    if(kind === 'both'){
+      out += '<div class="line invar"><span>Sous_chaine(ch,0,'+d+') + Sous_chaine(ch,'+f+',Long(ch))</span> = <b>"'
+           + (ch.slice(0,d)) + '" + "' + (ch.slice(f)) + '" = "' + eff + '"</b></div>';
+    }
+    if(kind === 'sous' && sous === '')
+      out += '<div class="line hintline">d = f : on s\'arrête là où on commence \u2192 chaîne vide.</div>';
+    if(kind === 'eff' && eff === '')
+      out += '<div class="line hintline">Tout est effacé : il ne reste rien.</div>';
+    res.innerHTML = out;
+  }
+  [src, rd, rf].forEach(function(e){ e.addEventListener('input', draw); });
+  draw();
+}
+banc('bancSous','sous');
+banc('bancEff','eff');
+banc('bancBoth','both');
+
+/* ============================================================
+   QUIZ — moteur réutilisable
+   ============================================================ */
+function quiz(hostId, Q){
+  var host = document.getElementById(hostId);
+  host.className = 'quiz';
+  host.innerHTML =
+    '<div class="qhead"><span class="qnum"></span><span class="qbar"><i></i></span><span class="qscore"></span></div>'
+  + '<div class="qbody">'
+  +   '<div class="qstring"></div><div class="qtext"></div><div class="qcall"></div>'
+  +   '<div class="qopts"></div><div class="qwhy"></div>'
+  +   '<div class="qbtns"><button class="btn qreveal">Révéler la réponse</button>'
+  +   '<button class="btn ghost qnext">Question suivante</button></div>'
+  + '</div>'
+  + '<div class="qend"><b class="qfinal"></b><p class="qmsg" style="margin:.4rem auto 1rem"></p>'
+  + '<button class="btn qrestart">Recommencer</button></div>';
+
+  var $ = function(s){ return host.querySelector(s); };
+  var k = 0, score = 0, answered = false;
+  function projection(){ return document.documentElement.dataset.mode === 'projection'; }
+
+  function render(){
+    answered = false;
+    var q = Q[k];
+    $('.qnum').textContent = (k+1) + ' / ' + Q.length;
+    $('.qbar i').style.width = ((k + 1) / Q.length * 100) + '%';
+    $('.qscore').textContent = score + (score > 1 ? ' bonnes réponses' : ' bonne réponse');
+    var st = $('.qstring'); st.innerHTML = '';
+    if(q.ch){
+      bandeIndicee(st, q.ch, {mini:true});
+      var lab = document.createElement('div');
+      lab.className = 'mono'; lab.style.cssText = 'font-size:.85em;color:var(--ink-soft);margin-top:.3rem';
+      lab.textContent = 'ch = "' + q.ch + '"';
+      st.appendChild(lab);
+    }
+    $('.qtext').textContent = q.t;
+    $('.qcall').textContent = q.c || '';
+    $('.qcall').style.display = q.c ? 'block' : 'none';
+    $('.qwhy').removeAttribute('data-show'); $('.qwhy').textContent = '';
+    var op = $('.qopts'); op.innerHTML = '';
+    q.o.forEach(function(txt, n){
+      var b = document.createElement('button');
+      b.className = 'qopt'; b.textContent = txt;
+      b.addEventListener('click', function(){ pick(n); });
+      op.appendChild(b);
+    });
+    $('.qreveal').style.display = projection() ? 'inline-block' : 'none';
+    $('.qnext').style.display = projection() ? 'inline-block' : 'none';
+    $('.qnext').textContent = (k === Q.length-1) ? 'Terminer' : 'Question suivante';
+  }
+
+  function pick(n){
+    if(answered) return;
+    if(projection()){
+      Array.prototype.forEach.call($('.qopts').children, function(b,j){
+        if(j===n) b.setAttribute('data-pick',''); else b.removeAttribute('data-pick');
+      });
+      return;
+    }
+    reveal(n);
+  }
+
+  function reveal(n){
+    if(answered) return;
+    answered = true;
+    var q = Q[k], opts = $('.qopts').children;
+    if(n === undefined){
+      n = -1;
+      for(var j=0;j<opts.length;j++) if(opts[j].hasAttribute('data-pick')) n = j;
+    }
+    Array.prototype.forEach.call(opts, function(b,j){
+      b.disabled = true; b.removeAttribute('data-pick');
+      if(j === q.a) b.setAttribute('data-good','');
+      else if(j === n) b.setAttribute('data-bad','');
+    });
+    if(n === q.a && !projection()) score++;
+    $('.qwhy').textContent = q.w;
+    $('.qwhy').setAttribute('data-show','');
+    $('.qscore').textContent = score + (score > 1 ? ' bonnes réponses' : ' bonne réponse');
+    $('.qnext').style.display = 'inline-block';
+    $('.qreveal').style.display = 'none';
+  }
+
+  $('.qreveal').addEventListener('click', function(){ reveal(); });
+  $('.qnext').addEventListener('click', function(){
+    if(!answered){ reveal(); return; }
+    if(k === Q.length - 1){ finish(); } else { k++; render(); }
+  });
+  $('.qrestart').addEventListener('click', function(){
+    k = 0; score = 0; $('.qend').removeAttribute('data-show'); $('.qbody').style.display = ''; render();
+  });
+
+  function finish(){
+    $('.qbody').style.display = 'none';
+    $('.qend').setAttribute('data-show','');
+    $('.qfinal').textContent = score + ' / ' + Q.length;
+    var m = $('.qmsg');
+    if(projection()) m.textContent = "Fin du bloc. Reprenez avec la classe les questions qui ont divisé.";
+    else if(score >= Q.length - 1) m.textContent = "Les bornes n'ont plus de secret pour vous.";
+    else if(score >= Q.length - 3) m.textContent = "Bon niveau. Rejouez le banc d'essai sur les questions ratées.";
+    else m.textContent = "À reprendre : refaites le banc d'essai avant de relancer le quiz.";
+  }
+  render();
+}
+
+var T = "TUNISIE", P = "PYTHON";
+
+quiz('quizA', [
+ {ch:T, t:"Que vaut cet appel ?", c:"Long(ch)", o:["6","7","8","\"7\""], a:1,
+  w:"7 caractères, indices 0 à 6."},
+ {ch:T, t:"Quel indice porte la lettre E ?", c:"", o:["5","6","7","-1"], a:1,
+  w:"T(0) U(1) N(2) I(3) S(4) I(5) E(6). Le dernier indice est Long(ch)-1 = 6."},
+ {ch:T, t:"Que vaut cet appel ?", c:"Pos(\"I\", ch)", o:["3","5","-1","2"], a:0,
+  w:"Il y a DEUX I dans TUNISIE, aux indices 3 et 5. Pos rend toujours la PREMIÈRE occurrence : 3."},
+ {ch:T, t:"Que vaut cet appel ?", c:"Pos(\"Z\", ch)", o:["0","-1","7","Faux"], a:1,
+  w:"Absent \u2192 -1. Et Pos rend un entier, jamais un booléen."},
+ {ch:null, t:"Que vaut cet appel ?", c:"Estnum(\"-7\")", o:["Vrai","Faux"], a:1,
+  w:"Estnum n'accepte que des chiffres : le signe moins la fait échouer, comme le point décimal."},
+ {ch:null, t:"Que vaut cet appel ?", c:"Valeur(\"20\") + Valeur(\"26\")", o:["\"2026\"","46","2026","\"46\""], a:1,
+  w:"Valeur convertit d'abord : 20 + 26 = 46. Sans Valeur, le + aurait collé les chaînes."},
+ {ch:null, t:"Que vaut cet appel ?", c:"Convch(15) + \" DT\"", o:["\"15 DT\"","15 DT","une erreur","\"15DT\""], a:0,
+  w:"Convch transforme le nombre en chaîne ; on peut alors le concaténer. Sans Convch, l'expression est invalide."},
+ {ch:null, t:"Que vaut cet appel ?", c:"Chr(Ord(\"a\") - 32)", o:["\"A\"","\"a\"","65","\"-32\""], a:0,
+  w:"Ord(\"a\") = 97 ; 97 - 32 = 65 ; Chr(65) = \"A\". L'écart majuscule/minuscule vaut toujours 32."}
+]);
+
+quiz('quizB', [
+ {ch:P, t:"Que vaut cet appel ?", c:"Sous_chaine(ch, 0, 3)", o:['"PYTH"','"PYT"','"YTH"','"PY"'], a:1,
+  w:"De 0 jusqu'à 3 exclu : les indices 0, 1 et 2."},
+ {ch:P, t:"Que vaut cet appel ?", c:"Sous_chaine(ch, 2, 5)", o:['"THON"','"THO"','"YTH"','"HON"'], a:1,
+  w:"Indices 2, 3, 4. L'indice 5 est la borne d'arrêt : il n'est pas pris."},
+ {ch:P, t:"Que vaut cet appel ?", c:"Sous_chaine(ch, 3, 3)", o:['"H"','"" (chaîne vide)','"HO"','une erreur'], a:1,
+  w:"d = f : on démarre là où on doit s'arrêter. Aucun caractère n'est pris."},
+ {ch:P, t:"Quel appel donne les trois derniers caractères, quelle que soit la chaîne ?", c:"",
+  o:["Sous_chaine(ch, Long(ch)-3, Long(ch))","Sous_chaine(ch, Long(ch)-3, Long(ch)-1)","Sous_chaine(ch, 3, 5)","Sous_chaine(ch, Long(ch)-2, Long(ch))"], a:0,
+  w:'La 2e et la 3e donnent "HO", la 4e donne "ON". Et la 3e ne marcherait que pour une chaîne de 6 caractères.'},
+ {ch:P, t:"Que vaut cet appel ?", c:"Effacer(ch, 0, 2)", o:['"PY"','"THON"','"YTHON"','"PYTHON"'], a:1,
+  w:"Effacer rend ce qui RESTE : on retire les indices 0 et 1."},
+ {ch:P, t:"Que vaut cet appel ?", c:"Effacer(ch, 2, 5)", o:['"PYN"','"PYON"','"PYHN"','"THO"'], a:0,
+  w:'On retire T, H et O. Il reste "PY" collé à "N".'},
+ {ch:P, t:'Quel appel transforme "PYTHON" en "PYON" ?', c:"",
+  o:["Effacer(ch, 2, 4)","Effacer(ch, 2, 3)","Effacer(ch, 3, 5)","Sous_chaine(ch, 2, 4)"], a:0,
+  w:"Il faut retirer T et H : indices 2 et 3. Donc f = 4, puisque f est exclue."},
+ {ch:P, t:"Effacer(ch, 0, 2) donne le même résultat que…", c:"",
+  o:["Sous_chaine(ch, 0, 2)","Sous_chaine(ch, 2, Long(ch))","Sous_chaine(ch, 2, Long(ch)-1)","Sous_chaine(ch, 0, Long(ch)-2)"], a:1,
+  w:"Effacer le début, c'est garder la fin. En général : Effacer(ch,d,f) = Sous_chaine(ch,0,d) + Sous_chaine(ch,f,Long(ch))."}
+]);
+
+/* ============================================================
+   MACHINE À CONCATÉNER — res se construit sous les yeux
+   ============================================================ */
+function machineConcat(hostId){
+  var host = document.getElementById(hostId);
+  host.className = 'sim';
+  host.innerHTML =
+    '<div class="simhead">'
+  +   '<label>ch =</label><input class="csrc" value="TUNIS" maxlength="12" spellcheck="false" autocomplete="off">'
+  +   '<span class="seg"><button class="on" data-sens="fin">res ← res + ch[i]</button>'
+  +   '<button data-sens="tete">res ← ch[i] + res</button></span>'
+  + '</div>'
+  + '<div class="ccells"></div>'
+  + '<div class="reslabel mono">res</div><div class="resbox"></div>'
+  + '<div class="simbtns"><button class="btn cstep">Pas suivant</button>'
+  + '<button class="btn ghost call">Tout dérouler</button>'
+  + '<button class="btn ghost creset">Recommencer</button></div>';
+
+  var $=function(s){return host.querySelector(s);};
+  var ch='', i=0, res='', sens='fin', boxes=[];
+
+  function draw(){
+    var h=$('.ccells'); h.innerHTML='';
+    boxes = ch.length ? bandeIndicee(h, ch, {}) : [];
+    paint();
+  }
+  function paint(){
+    boxes.forEach(function(b,k){
+      b.removeAttribute('data-state');
+      if(k<i) b.setAttribute('data-state','ok');
+      else if(k===i) b.setAttribute('data-state','scan');
+    });
+    var box=$('.resbox');
+    if(res===''){ box.innerHTML='<span class="empty">"" &nbsp;— chaîne vide</span>'; return; }
+    var pos = (sens==='fin') ? res.length-1 : 0;
+    box.innerHTML='';
+    for(var k=0;k<res.length;k++){
+      var s=document.createElement('span');
+      s.textContent=res[k];
+      if(k===pos && i>0) s.className='new';
+      box.appendChild(s);
+    }
+  }
+  function reset(){ ch=$('.csrc').value; i=0; res=''; $('.cstep').disabled=false; $('.call').disabled=false; draw(); }
+  function step(){
+    if(i>=ch.length){ $('.cstep').disabled=true; $('.call').disabled=true; return; }
+    res = (sens==='fin') ? res+ch[i] : ch[i]+res;
+    i++; paint();
+    if(i>=ch.length){ $('.cstep').disabled=true; $('.call').disabled=true; }
+  }
+  $('.cstep').addEventListener('click', step);
+  $('.call').addEventListener('click', function(){ var g=0; while(i<ch.length && g<60){ step(); g++; } });
+  $('.creset').addEventListener('click', reset);
+  $('.csrc').addEventListener('input', reset);
+  Array.prototype.forEach.call(host.querySelectorAll('.seg button'), function(b){
+    b.addEventListener('click', function(){
+      Array.prototype.forEach.call(host.querySelectorAll('.seg button'), function(x){ x.classList.remove('on'); });
+      b.classList.add('on'); sens=b.dataset.sens;
+      var a=document.getElementById('algoConcat');
+      if(a) a.innerHTML = 'res \u2190 ""\n<b>Pour</b> i de 0 \u00e0 Long(ch)-1 <b>Faire</b>\n    res \u2190 '
+        + (sens==='fin' ? 'res + ch[i]' : 'ch[i] + res') + '\n<b>Fin Pour</b>';
+      reset();
+    });
+  });
+  reset();
+}
+
+/* ============================================================
+   CHERCHEUR DE POSITION — Pos(ch1, ch2) glisse et compare
+   ============================================================ */
+function machinePos(hostId){
+  var host = document.getElementById(hostId);
+  host.className = 'sim';
+  host.innerHTML =
+    '<div class="simhead">'
+  +   '<label>Pos (</label><input class="pn" value="BE" maxlength="4" spellcheck="false" autocomplete="off" style="width:5.5rem">'
+  +   '<label>,</label><input class="ph" value="NABEUL" maxlength="14" spellcheck="false" autocomplete="off">'
+  +   '<label>)</label>'
+  + '</div>'
+  + '<div class="pcells"></div>'
+  + '<div class="presult mono">—</div>'
+  + '<div class="simbtns"><button class="btn pstep">Comparer ici</button>'
+  + '<button class="btn ghost pall">Tout dérouler</button>'
+  + '<button class="btn ghost preset">Recommencer</button></div>';
+
+  var $=function(s){return host.querySelector(s);};
+  var needle='', hay='', j=0, found=-1, done=false, boxes=[];
+
+  function draw(){
+    var h=$('.pcells'); h.innerHTML='';
+    boxes = hay.length ? bandeIndicee(h, hay, {}) : [];
+    paint();
+  }
+  function paint(){
+    boxes.forEach(function(b){ b.removeAttribute('data-state'); });
+    if(done && found>=0){
+      for(var k=found;k<found+needle.length;k++) if(boxes[k]) boxes[k].setAttribute('data-state','hit');
+      return;
+    }
+    if(done) return;
+    for(var k=j;k<j+needle.length;k++) if(boxes[k]) boxes[k].setAttribute('data-state','win');
+  }
+  function show(txt, cls){
+    var r=$('.presult'); r.className='presult mono '+(cls||''); r.innerHTML=txt;
+  }
+  function reset(){
+    needle=$('.pn').value; hay=$('.ph').value;
+    j=0; found=-1; done=false;
+    $('.pstep').disabled=false; $('.pall').disabled=false;
+    draw();
+    show('j = 0 — on compare la fenêtre avec &nbsp;"'+needle+'"');
+  }
+  function step(){
+    if(done||!needle.length) return;
+    if(j+needle.length>hay.length){
+      done=true; found=-1; paint();
+      show('Aucune fenêtre ne correspond &nbsp;→&nbsp; <b>Pos("'+needle+'", ch) = -1</b>','no');
+      $('.pstep').disabled=true; $('.pall').disabled=true; return;
+    }
+    var win=hay.slice(j,j+needle.length);
+    if(win===needle){
+      done=true; found=j; paint();
+      show('"'+win+'" = "'+needle+'" &nbsp;→&nbsp; <b>Pos("'+needle+'", ch) = '+j+'</b>','yes');
+      $('.pstep').disabled=true; $('.pall').disabled=true; return;
+    }
+    show('j = '+j+' : "'+win+'" \u2260 "'+needle+'" &nbsp;→&nbsp; on glisse d\'un cran','no');
+    j++; paint();
+  }
+  $('.pstep').addEventListener('click', step);
+  $('.pall').addEventListener('click', function(){ var g=0; while(!done && g<80){ step(); g++; } });
+  $('.preset').addEventListener('click', reset);
+  $('.pn').addEventListener('input', reset);
+  $('.ph').addEventListener('input', reset);
+  reset();
+}
+
+machineConcat('animConcat');
+machinePos('animPos');
+/* ============================================================
+   SIMULATEUR — Verif_Maj : Tant que (i < Long(ch)) Et ok
+   ============================================================ */
+(function(){
+  var src = document.getElementById('src');
+  var cells = document.getElementById('cells');
+  var chips = document.getElementById('chips');
+  var lenEl = document.getElementById('len');
+  var regI = document.getElementById('regI');
+  var regOk = document.getElementById('regOk');
+  var regCond = document.getElementById('regCond');
+  var log = document.getElementById('log');
+  var verdict = document.getElementById('verdict');
+  var bee = document.getElementById('bee');
+  var bStep = document.getElementById('step');
+  var bAll = document.getElementById('all');
+  var bReset = document.getElementById('reset');
+
+  var ch = '', i = 0, ok = true, done = false;
+  var boxes = [];   /* les cases, indexées comme la chaîne : 0 .. Long(ch)-1 */
+
+  var presets = ['TUNIS','SFAX','Tunis','TUN1S','BEN AROUS','',];
+  presets.forEach(function(p){
+    var b = document.createElement('button');
+    b.textContent = (p === '') ? '(chaîne vide)' : '"' + p + '"';
+    b.addEventListener('click', function(){ src.value = p; reset(); });
+    chips.appendChild(b);
+  });
+
+  function drawCells(){
+    /* on vide tout sauf l'abeille */
+    Array.prototype.slice.call(cells.children).forEach(function(n){
+      if(n !== bee) cells.removeChild(n);
+    });
+    bee.removeAttribute('data-show');
+    boxes = [];
+    if(ch.length === 0){
+      var e = document.createElement('div');
+      e.className = 'mono';
+      e.style.color = 'var(--ink-soft)';
+      e.style.padding = '.9rem 0';
+      e.textContent = 'ch = ""   \u2192   aucune case';
+      cells.appendChild(e);
+      return;
+    }
+    for(var k = 0; k < ch.length; k++){
+      var box = document.createElement('div');
+      box.className = 'cellbox';
+      var fl = document.createElement('div');
+      fl.className = 'flag';
+      fl.appendChild(document.createElement('span'));
+      var c = document.createElement('div');
+      c.className = 'ch';
+      if(ch[k] === ' '){ box.setAttribute('data-space',''); } else { c.textContent = ch[k]; }
+      var ix = document.createElement('div');
+      ix.className = 'ix';
+      ix.textContent = k;
+      box.appendChild(fl); box.appendChild(c); box.appendChild(ix);
+      cells.appendChild(box);
+      boxes.push(box);
+    }
+    paint();
+  }
+
+  function setFlag(k, val){
+    var box = boxes[k];
+    if(!box) return;
+    box.querySelector('.flag span').textContent = val;
+    box.setAttribute('data-flag', val);
+  }
+
+  function sendBee(k){
+    var box = boxes[k];
+    if(!box) return;
+    bee.style.left = (box.offsetLeft + box.offsetWidth / 2 - 29) + 'px';
+    bee.setAttribute('data-show','');
+  }
+
+  function paint(){
+    for(var k = 0; k < boxes.length; k++){
+      var b = boxes[k];
+      b.removeAttribute('data-state');
+      if(!ok && k === i){ b.setAttribute('data-state','bad'); }
+      else if(k < i){ b.setAttribute('data-state','ok'); }
+      else if(k === i && !done){ b.setAttribute('data-state','scan'); }
+    }
+  }
+
+  function say(txt, cls){
+    var d = document.createElement('div');
+    if(cls) d.className = cls;
+    d.textContent = txt;
+    log.appendChild(d);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function refresh(){
+    regI.textContent = i;
+    regOk.textContent = ok ? 'Vrai' : 'Faux';
+    regOk.className = ok ? 't' : 'f';
+    lenEl.textContent = ch.length;
+    paint();
+  }
+
+  function reset(){
+    ch = src.value;
+    i = 0; ok = true; done = false;
+    log.innerHTML = '';
+    verdict.removeAttribute('data-show');
+    bStep.disabled = false; bAll.disabled = false;
+    regCond.textContent = '—';
+    drawCells();
+    refresh();
+    say('ok ← Vrai      i ← 0', 'hint');
+  }
+
+  function step(){
+    if(done) return;
+    var alive = (i < ch.length) && ok;
+    regCond.textContent = '(' + i + ' < ' + ch.length + ') Et ' + (ok ? 'Vrai' : 'Faux') + ' → ' + (alive ? 'Vrai' : 'Faux');
+
+    if(!alive){
+      done = true;
+      bStep.disabled = true; bAll.disabled = true;
+      var why = (!ok) ? 'drapeau baissé' : 'fin de la chaîne atteinte';
+      say('Condition fausse (' + why + ') → sortie de la boucle', ok ? 'ok' : 'no');
+      say('Retourner ok → ' + (ok ? 'Vrai' : 'Faux'), ok ? 'ok' : 'no');
+      verdict.textContent = ok
+        ? '✓ Verif_Maj("' + ch + '") = Vrai — la saisie est acceptée'
+        : '✗ Verif_Maj("' + ch + '") = Faux — la saisie est refusée (caractère fautif à l\'indice ' + i + ')';
+      verdict.setAttribute('data-v', ok ? 'true' : 'false');
+      verdict.setAttribute('data-show','');
+      paint();
+      return;
+    }
+
+    var c = ch[i];
+    var isMaj = (c >= 'A' && c <= 'Z');
+    var shown = (c === ' ') ? '" " (espace)' : '"' + c + '"';
+    if(isMaj){
+      setFlag(i, 'Vrai');
+      say('i=' + i + ' : ch[' + i + '] = ' + shown + ' \u2208 ["A".."Z"] \u2192 Vrai,  donc i \u2190 ' + (i+1), 'ok');
+      i = i + 1;
+    } else {
+      setFlag(i, 'Faux');
+      sendBee(i);
+      say('i=' + i + ' : ch[' + i + '] = ' + shown + ' \u2208 ["A".."Z"] \u2192 Faux, donc ok \u2190 Faux', 'no');
+      ok = false;
+    }
+    refresh();
+    var nextAlive = (i < ch.length) && ok;
+    regCond.textContent = '(' + i + ' < ' + ch.length + ') Et ' + (ok ? 'Vrai' : 'Faux')
+                        + ' \u2192 ' + (nextAlive ? 'Vrai' : 'Faux');
+  }
+
+  bStep.addEventListener('click', step);
+  bAll.addEventListener('click', function(){
+    var guard = 0;
+    while(!done && guard < 200){ step(); guard++; }
+  });
+  bReset.addEventListener('click', reset);
+  src.addEventListener('input', reset);
+
+  reset();
+})();
+
+/* ============================================================
+   ÉCRAN 0 — registres cliquables + l'abeille qui compte
+   ============================================================ */
+function beeMarkup(){
+  return '<svg class="bee" viewBox="0 0 72 50" aria-hidden="true">'
+  + '<ellipse class="wing" cx="26" cy="16" rx="13" ry="8" fill="#bfdcf2" opacity=".8"/>'
+  + '<ellipse class="wing" cx="41" cy="14" rx="11" ry="7" fill="#bfdcf2" opacity=".8"/>'
+  + '<clipPath id="bb2"><ellipse cx="32" cy="31" rx="19" ry="12.5"/></clipPath>'
+  + '<ellipse cx="32" cy="31" rx="19" ry="12.5" fill="#e8a33d"/>'
+  + '<g clip-path="url(#bb2)" fill="#2a2118"><rect x="20" y="18" width="6" height="26"/>'
+  + '<rect x="32" y="18" width="6" height="26"/><rect x="44" y="18" width="6" height="26"/></g>'
+  + '<circle cx="55" cy="28" r="8" fill="#2a2118"/><circle cx="58" cy="26" r="2.1" fill="#fff"/>'
+  + '<path d="M53 21 L50 13 M58 21 L61 14" stroke="#2a2118" stroke-width="2" stroke-linecap="round" fill="none"/>'
+  + '<circle cx="50" cy="12" r="2" fill="#2a2118"/><circle cx="62" cy="13" r="2" fill="#2a2118"/></svg>';
+}
+(function(){
+  var bLen=document.getElementById('b0bLen'), bF=document.getElementById('b0bFirst'), bL=document.getElementById('b0bLast');
+  var boxes=[], bee=null, timer=null;
+
+  window.__b0register=function(newBoxes, host){
+    boxes=newBoxes;
+    var row=host.querySelector('.cells');
+    if(row && !row.querySelector('.bee')){
+      var d=document.createElement('div'); d.innerHTML=beeMarkup();
+      row.appendChild(d.firstChild);
+    }
+    bee=row?row.querySelector('.bee'):null;
+    if(bee) bee.style.opacity=0;
+  };
+  function clearAll(){
+    if(timer){ clearInterval(timer); timer=null; }
+    boxes.forEach(function(b){ b.removeAttribute('data-state'); });
+    [bLen,bF,bL].forEach(function(b){ b.removeAttribute('data-on'); });
+    if(bee) bee.style.opacity=0;
+    var l=document.getElementById('b0len'); if(l) l.textContent=boxes.length;
+  }
+  bF.addEventListener('click', function(){
+    var on=bF.hasAttribute('data-on'); clearAll();
+    if(!on && boxes[0]){ bF.setAttribute('data-on',''); boxes[0].setAttribute('data-state','pick'); }
+  });
+  bL.addEventListener('click', function(){
+    var on=bL.hasAttribute('data-on'); clearAll();
+    if(!on && boxes.length){ bL.setAttribute('data-on',''); boxes[boxes.length-1].setAttribute('data-state','pick'); }
+  });
+  bLen.addEventListener('click', function(){
+    var on=bLen.hasAttribute('data-on'); clearAll();
+    if(on || !boxes.length) return;
+    bLen.setAttribute('data-on','');
+    var lent=document.getElementById('b0len'), k=0;
+    lent.textContent=0;
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      boxes.forEach(function(b){ b.setAttribute('data-state','pick'); });
+      lent.textContent=boxes.length; return;
+    }
+    if(bee) bee.style.opacity=1;
+    timer=setInterval(function(){
+      if(k>=boxes.length){ clearInterval(timer); timer=null; if(bee) bee.style.opacity=0; return; }
+      boxes[k].setAttribute('data-state','pick');
+      if(bee) bee.style.left=(boxes[k].offsetLeft+boxes[k].offsetWidth/2-29)+'px';
+      k++; lent.textContent=k;
+    }, 340);
+  });
+})();
+
+/* ============================================================
+   MACHINE À DÉCOUPER — la chaîne est consommée bloc par bloc
+   ============================================================ */
+function machineBloc(hostId){
+  var host=document.getElementById(hostId);
+  host.className='sim';
+  host.innerHTML=
+    '<div class="simhead"><label>ch =</label>'
+  + '<input class="msrc" value="ALI BEN SALAH" maxlength="26" spellcheck="false" autocomplete="off">'
+  + '<label>s\u00e9p =</label><input class="msep" value=" " maxlength="1" style="width:3.2rem;text-align:center"></div>'
+  + '<div class="mcells"></div><div class="mstate"></div>'
+  + '<div class="reslabel mono">T \u2014 les blocs extraits</div><div class="mtab"></div>'
+  + '<div class="simbtns"><button class="btn mstep">Pas suivant</button>'
+  + '<button class="btn ghost mall">Tout d\u00e9rouler</button>'
+  + '<button class="btn ghost mreset">Recommencer</button></div>';
+
+  var $=function(x){return host.querySelector(x);};
+  var ch='', sep=' ', T=[], phase='init', done=false;
+
+  function drawCh(){
+    var h=$('.mcells'); h.innerHTML='';
+    if(ch===''){
+      h.innerHTML='<div class="mono" style="color:var(--ink-soft);padding:.8rem 0">ch = ""</div>';
+      return [];
+    }
+    return bandeIndicee(h, ch, {});
+  }
+  function drawT(){
+    var h=$('.mtab'); h.innerHTML='';
+    if(!T.length){ h.innerHTML='<div class="mono" style="color:var(--ink-soft)">tableau vide</div>'; return; }
+    var row=document.createElement('div'); row.className='blocs';
+    T.forEach(function(m,k){
+      var c=document.createElement('div'); c.className='bloc';
+      c.innerHTML='<b>'+m+'</b><i>T['+k+']</i>';
+      row.appendChild(c);
+    });
+    h.appendChild(row);
+  }
+  function say(t,cls){ var e=$('.mstate'); e.className='mstate '+(cls||''); e.innerHTML=t; }
+  function stop(){ done=true; $('.mstep').disabled=true; $('.mall').disabled=true; }
+
+  function reset(){
+    ch=$('.msrc').value; sep=$('.msep').value||' ';
+    T=[]; phase='init'; done=false;
+    $('.mstep').disabled=false; $('.mall').disabled=false;
+    drawCh(); drawT();
+    say('\u00c9tape 0 \u2014 on ajoute le s\u00e9parateur final : <b>ch \u2190 ch + s\u00e9p</b>');
+  }
+  function step(){
+    if(done) return;
+    if(phase==='init'){
+      ch=ch+sep; phase='loop';
+      var bx=drawCh();
+      if(bx.length) bx[bx.length-1].setAttribute('data-state','scan');
+      say('ch \u2190 ch + s\u00e9p &nbsp;\u2014&nbsp; le dernier bloc a maintenant un s\u00e9parateur, comme les autres.');
+      return;
+    }
+    if(ch===''){
+      stop(); drawCh();
+      say('ch = "" \u2192 <b>sortie de la boucle</b> &nbsp;\u2014&nbsp; '+T.length+' bloc(s) extrait(s).','yes');
+      return;
+    }
+    var pp=ch.indexOf(sep);
+    if(pp===-1) pp=ch.length;
+    var bloc=ch.slice(0,pp);
+    var bx=drawCh();
+    for(var k=0;k<pp;k++) if(bx[k]) bx[k].setAttribute('data-state','ok');
+    if(bx[pp]) bx[pp].setAttribute('data-state','bad');
+    T.push(bloc); drawT();
+    ch=ch.slice(pp+1);
+    say('p \u2190 Pos(s\u00e9p, ch) = '+pp
+      +' &nbsp;\u00b7&nbsp; bloc \u2190 Sous_chaine(ch, 0, '+pp+') = <b>"'+bloc+'"</b>'
+      +' &nbsp;\u00b7&nbsp; T['+(T.length-1)+'] \u2190 bloc'
+      +' &nbsp;\u00b7&nbsp; ch \u2190 Effacer(ch, 0, '+(pp+1)+')');
+  }
+  $('.mstep').addEventListener('click', function(){ step(); if(!done && phase==='loop') drawCh(); });
+  $('.mall').addEventListener('click', function(){ var g=0; while(!done && g<40){ step(); g++; } });
+  $('.mreset').addEventListener('click', reset);
+  $('.msrc').addEventListener('input', reset);
+  $('.msep').addEventListener('input', reset);
+  reset();
+}
+machineBloc('animBloc');
+
+/* la bande de l'écran 1 est dessinée avant que l'abeille existe : on la redessine */
+(function(){ var e=document.getElementById('b0src'); if(e) e.dispatchEvent(new Event('input')); })();
+
+/* ============================================================
+   ONGLETS — les deux écritures de la fonction Verif
+   ============================================================ */
+(function(){
+  var seg=document.getElementById('segVerif');
+  if(!seg) return;
+  var A=document.getElementById('algoVerif'), Tb=document.getElementById('tdoVerif'), No=document.getElementById('noteVerif');
+  var data={
+    ok:{algo:'<b>Fonction</b> Verif_Maj (ch : Cha\u00eene de caract\u00e8res) : Bool\u00e9en\n<b>DEBUT</b>\n    ok \u2190 Vrai\n    i \u2190 0\n    <b>Tant que</b> (i &lt; Long(ch)) <b>Et</b> ok <b>Faire</b>\n        <b>Si</b> ch[i] \u2208 ["A".."Z"] <b>Alors</b>\n            i \u2190 i + 1\n        <b>Sinon</b>\n            ok \u2190 Faux\n        <b>FinSi</b>\n    <b>Fin Tant que</b>\n    <b>Retourner</b> ok\n<b>FIN</b>',
+        tdo:'<caption>T.D.O.L de Verif_Maj</caption><tr><th>Objet</th><th>Type / Nature</th></tr><tr><td>i</td><td>Entier</td></tr><tr><td>ok</td><td>Bool\u00e9en</td></tr>',
+        note:'<span class="tag">Trois r\u00e9flexes de r\u00e9daction</span><span class="mono">ch</span> est un <strong>param\u00e8tre</strong> : jamais dans un T.D.O.L. \u2014 Le T.D.O.L de <span class="mono">Saisir</span> n\'a aucune variable locale mais existe quand m\u00eame : il d\u00e9clare le <strong>module appel\u00e9</strong>. \u2014 <span class="mono">Retourner</span> se place <strong>apr\u00e8s</strong> <span class="mono">Fin Tant que</span>.'},
+    noflag:{algo:'<b>Fonction</b> Verif_Maj (ch : Cha\u00eene de caract\u00e8res) : Bool\u00e9en\n<b>DEBUT</b>\n    i \u2190 0\n    <b>Tant que</b> (i &lt; Long(ch)) <b>Et</b> (ch[i] \u2208 ["A".."Z"]) <b>Faire</b>\n        i \u2190 i + 1\n    <b>Fin Tant que</b>\n    <b>Retourner</b> (i = Long(ch))\n<b>FIN</b>',
+        tdo:'<caption>T.D.O.L de Verif_Maj</caption><tr><th>Objet</th><th>Type / Nature</th></tr><tr><td>i</td><td>Entier</td></tr>',
+        note:'<span class="tag">L\'indice contient d\u00e9j\u00e0 la r\u00e9ponse</span>La boucle s\'arr\u00eate pour deux raisons seulement : la cha\u00eene est finie (<span class="mono">i = Long(ch)</span>) ou un intrus a \u00e9t\u00e9 rencontr\u00e9 (<span class="mono">i &lt; Long(ch)</span>). Le drapeau faisait double emploi. \u26a0 Le test de l\'indice vient <strong>en premier</strong> dans le <span class="mono">Et</span> : \u00e9crit dans l\'autre sens, on lit <span class="mono">ch[Long(ch)]</span>.'}
+  };
+  function show(v){
+    A.innerHTML=data[v].algo; Tb.innerHTML=data[v].tdo; No.innerHTML=data[v].note;
+    No.className='note'+(v==='noflag'?' warn':'');
+  }
+  Array.prototype.forEach.call(seg.children,function(b){
+    b.addEventListener('click',function(){
+      Array.prototype.forEach.call(seg.children,function(x){x.classList.remove('on');});
+      b.classList.add('on'); show(b.dataset.v);
+    });
+  });
+  show('ok');
+})();
+
+/* ============================================================
+   COMMUTATEUR — une seule ligne change dans le squelette
+   ============================================================ */
+(function(){
+  var seg=document.getElementById('segCond');
+  if(!seg) return;
+  var A=document.getElementById('algoCond'), No=document.getElementById('noteCond');
+  var C={
+   maj:{si:'ch[i] \u2208 ["A".."Z"]', n:'Le cas de d\u00e9part : une seule plage \u00e0 tester.'},
+   min:{si:'ch[i] \u2208 ["a".."z"]', n:'M\u00eame structure, autre plage. Rien d\'autre n\'a boug\u00e9.'},
+   let:{si:'Majus(ch[i]) \u2208 ["A".."Z"]', n:'<strong>L\'astuce</strong> : on met la copie en majuscule avant de tester. Une condition au lieu de deux reli\u00e9es par <span class="mono">Ou</span>.'},
+   lesp:{si:'(Majus(ch[i]) \u2208 ["A".."Z"]) <b>Ou</b> (ch[i] = " ")', n:'On autorise un caract\u00e8re suppl\u00e9mentaire : l\'espace.'},
+   dist:{si:'Pos(ch[i], ch) = i', n:'<span class="mono">Pos</span> rend la position de la <strong>premi\u00e8re</strong> occurrence. Si elle vaut <span class="mono">i</span>, le caract\u00e8re n\'\u00e9tait jamais apparu avant.'}
+  };
+  function show(k){
+    A.innerHTML='<b>Fonction</b> Verif (ch : Cha\u00eene de caract\u00e8res) : Bool\u00e9en\n<b>DEBUT</b>\n    ok \u2190 Vrai\n    i \u2190 0\n    <b>Tant que</b> (i &lt; Long(ch)) <b>Et</b> ok <b>Faire</b>\n        <b>Si</b> <mark>'+C[k].si+'</mark> <b>Alors</b>\n            i \u2190 i + 1\n        <b>Sinon</b>\n            ok \u2190 Faux\n        <b>FinSi</b>\n    <b>Fin Tant que</b>\n    <b>Retourner</b> ok\n<b>FIN</b>';
+    No.innerHTML='<span class="tag">Seule la ligne surlign\u00e9e change</span>'+C[k].n;
+  }
+  Array.prototype.forEach.call(seg.children,function(b){
+    b.addEventListener('click',function(){
+      Array.prototype.forEach.call(seg.children,function(x){x.classList.remove('on');});
+      b.classList.add('on'); show(b.dataset.c);
+    });
+  });
+  show('maj');
+})();
+
+</script>
+</body>
+</html>
