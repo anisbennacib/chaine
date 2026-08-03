@@ -151,8 +151,9 @@ table.cmp code{font-family:var(--mono);font-size:.92em}
 .cellbox[data-flag] .flag span{opacity:1;transform:none}
 .cellbox[data-flag="Vrai"] .flag span{background:var(--true)}
 .cellbox[data-flag="Faux"] .flag span{background:var(--false)}
+.cells.hasbee{padding-top:2.5rem}
 .bee{
-  position:absolute;top:-.35rem;width:58px;pointer-events:none;
+  position:absolute;top:0;width:58px;pointer-events:none;
   opacity:0;transition:opacity .25s ease,left .45s cubic-bezier(.34,1.4,.5,1);
   animation:bob 1.5s ease-in-out infinite;
 }
@@ -376,6 +377,92 @@ pre.algo mark{background:var(--cursor);color:#231703;padding:.05em .3em;border-r
 html[data-theme="dark"] pre.algo mark{background:var(--cursor);color:#231703}
 html[data-mode="projection"] .seg button{font-size:1rem;padding:.5rem 1rem}
 
+/* ---------- SÉLECTEUR DE SECTION (mobile) ---------- */
+#jump{
+  display:none;margin-left:auto;max-width:52vw;font-family:var(--sans);font-size:.78rem;
+  padding:.32rem .4rem;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink);
+}
+
+/* ---------- MOBILE ---------- */
+@media (max-width:760px){
+  .topbar{gap:.45rem;padding:.45rem .65rem}
+  .brand svg{width:22px;height:22px}
+  .brand b{font-size:.68rem;letter-spacing:.08em}
+  .brand span{font-size:.58rem}
+  .strip{display:none}
+  #jump{display:block}
+  .iconbtn{width:29px;height:28px;font-size:.85rem}
+  #mode{font-size:.58rem !important;padding:0 .4rem !important;letter-spacing:.03em !important}
+  main{padding:1rem .8rem 5.6rem;max-width:100%}
+  h1{font-size:clamp(1.35rem,6.4vw,2rem)}
+  h2{font-size:1.02rem}
+  .lead{font-size:1em}
+  .grid2,.grid3{grid-template-columns:1fr;gap:.75rem}
+  pre.algo{font-size:.76rem;padding:.7rem .8rem;line-height:1.45}
+  table.cmp{font-size:.84rem;display:block;overflow-x:auto;white-space:nowrap}
+  table.cmp td:first-child{width:auto}
+  table.tdo{max-width:100%;font-size:.8rem}
+  .algoblock table.tdo{margin-left:0}
+  .qopts{grid-template-columns:1fr}
+  .qopt{font-size:.92rem;padding:.55rem .7rem}
+  .qcall{font-size:1.05em}
+  .simhead{gap:.4rem}
+  .simhead input{width:100%;flex:1 1 100%}
+  .simhead label{font-size:.8rem}
+  .seg{flex-wrap:wrap;width:100%}
+  .seg button{flex:1 1 auto;font-size:.76rem;padding:.35rem .5rem}
+  .resbox{font-size:1.5rem;letter-spacing:.02em}
+  .bornes label{min-width:3.8rem;font-size:.85rem}
+  .state{gap:.35rem}
+  .reg{font-size:.82rem;padding:.28rem .5rem}
+  .log{font-size:.74rem}
+  .mstate{font-size:.78rem;white-space:normal}
+  .sep .pnum{font-size:5rem}
+  .sep .steps span{font-size:.78em;padding:.28rem .6rem}
+  .footnav{padding:.45rem .65rem;gap:.5rem}
+  .footnav .pos{font-size:.68rem;text-align:center}
+  .nav{padding:.45rem .7rem;font-size:.82rem}
+  .note{font-size:.95em}
+  .simbtns .btn{flex:1 1 auto;font-size:.85rem;padding:.45rem .6rem}
+}
+@media (max-width:760px){
+  :root{--cell:clamp(30px,8.2vw,46px)}
+  .edge{display:none}
+  #zoomIn,#zoomOut,#mode,#full{display:none}
+  #jump{max-width:none;flex:1 1 auto}
+  .nav{width:46px;height:40px;padding:0;font-size:1.2rem;display:flex;align-items:center;justify-content:center}
+  .nav .lbl{display:none}
+  .footnav{padding:.5rem .6rem}
+  .footnav .pos{font-size:.72rem;line-height:1.25}
+  .sim{padding:.75rem .7rem}
+  .simhead{margin-bottom:.6rem}
+}
+@media (max-width:400px){
+  .brand span{display:none}
+  #jump{max-width:44vw}
+}
+
+/* ---------- flèches latérales (écrans larges) ---------- */
+.edge{
+  position:fixed;top:50%;transform:translateY(-50%);z-index:15;
+  width:42px;height:74px;border:1px solid var(--line);background:var(--paper);color:var(--ink);
+  border-radius:9px;opacity:.4;cursor:pointer;font-size:1.6rem;line-height:1;transition:opacity .18s,border-color .18s;
+}
+.edge:hover:not(:disabled){opacity:1;border-color:var(--green);color:var(--green)}
+.edge:disabled{opacity:.1;cursor:default}
+#edgePrev{left:8px}
+#edgeNext{right:8px}
+
+/* ---------- barre de progression du document ---------- */
+.footnav{position:fixed}
+.deckbar{position:absolute;top:0;left:0;right:0;height:3px;background:var(--surface-2)}
+.deckbar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s ease}
+
+/* ---------- bandes : plus de barre de défilement visible ---------- */
+.stripwrap{scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.stripwrap::-webkit-scrollbar{height:0;width:0;display:none}
+.log::-webkit-scrollbar{width:5px}
+
 @media print{
   .topbar,.footnav{display:none}
   section{display:block!important;page-break-after:always}
@@ -396,6 +483,7 @@ html[data-mode="projection"] .seg button{font-size:1rem;padding:.5rem 1rem}
     </div>
   </div>
   <nav class="strip" id="strip" aria-label="Sections"></nav>
+  <select id="jump" aria-label="Aller à une section"></select>
   <button class="iconbtn" id="zoomOut" title="Réduire le texte  (touche −)" aria-label="Réduire le texte">A−</button>
   <button class="iconbtn" id="zoomIn" title="Agrandir le texte  (touche +)" aria-label="Agrandir le texte">A+</button>
   <button class="iconbtn" id="mode" title="Mode projection / lecture  (touche P)" aria-label="Changer de mode" style="width:auto;padding:0 .6rem;font-size:.72rem;font-weight:800;letter-spacing:.06em">LECTURE</button>
@@ -695,7 +783,7 @@ Majus("menzel temime") → "MENZEL TEMIME"</pre>
 
     <div class="chips" id="chips"></div>
 
-    <div class="stripwrap"><div class="cells" id="cells">
+    <div class="stripwrap"><div class="cells hasbee" id="cells">
       <svg class="bee" id="bee" viewBox="0 0 72 50" aria-hidden="true">
         <ellipse class="wing" cx="26" cy="16" rx="13" ry="8" fill="#bfdcf2" opacity=".8"/>
         <ellipse class="wing" cx="41" cy="14" rx="11" ry="7" fill="#bfdcf2" opacity=".8"/>
@@ -928,10 +1016,14 @@ Pos(sep, ch)                     → 3
 </section>
 
 </main>
+<button class="edge" id="edgePrev" aria-label="Écran précédent">‹</button>
+<button class="edge" id="edgeNext" aria-label="Écran suivant">›</button>
+
 <nav class="footnav" aria-label="Navigation">
-  <button class="nav" id="prev">← Précédent</button>
+  <div class="deckbar"><i id="deckfill"></i></div>
+  <button class="nav" id="prev"><span class="ar">←</span><span class="lbl"> Précédent</span></button>
   <span class="pos" id="pos"></span>
-  <button class="nav" id="next">Suivant →</button>
+  <button class="nav" id="next"><span class="lbl">Suivant </span><span class="ar">→</span></button>
 </nav>
 
 
@@ -948,7 +1040,11 @@ Pos(sep, ch)                     → 3
   var pos  = document.getElementById('pos');
   var cur = 0;
 
+  var jump = document.getElementById('jump');
   sections.forEach(function(s,i){
+    var o = document.createElement('option');
+    o.value = i; o.textContent = i + ' — ' + (s.dataset.title || '');
+    jump.appendChild(o);
     var b = document.createElement('button');
     b.textContent = i;
     b.title = s.dataset.title || ('Section ' + i);
@@ -966,10 +1062,18 @@ Pos(sep, ch)                     → 3
     });
     prev.disabled = (cur === 0);
     next.disabled = (cur === sections.length - 1);
+    document.getElementById('edgePrev').disabled = prev.disabled;
+    document.getElementById('edgeNext').disabled = next.disabled;
+    document.getElementById('deckfill').style.width = ((cur + 1) / sections.length * 100) + '%';
     pos.textContent = cur + ' / ' + (sections.length - 1) + ' · ' + (sections[cur].dataset.title || '');
+    jump.value = cur;
     window.scrollTo({top:0, behavior:'instant'});
   }
 
+  var ePrev = document.getElementById('edgePrev'), eNext = document.getElementById('edgeNext');
+  ePrev.addEventListener('click', function(){ go(cur - 1); });
+  eNext.addEventListener('click', function(){ go(cur + 1); });
+  jump.addEventListener('change', function(){ go(+jump.value); });
   prev.addEventListener('click', function(){ go(cur - 1); });
   next.addEventListener('click', function(){ go(cur + 1); });
 
@@ -1149,6 +1253,12 @@ function banc(hostId, kind){
 banc('bancSous','sous');
 banc('bancEff','eff');
 banc('bancBoth','both');
+
+/* position de l'abeille, bornée pour ne jamais déborder de la bande */
+function posBee(box, row){
+  var max = Math.max(0, row.scrollWidth - 58);
+  return Math.min(max, Math.max(0, box.offsetLeft + box.offsetWidth / 2 - 29));
+}
 
 /* ============================================================
    QUIZ — moteur réutilisable
@@ -1510,7 +1620,7 @@ machinePos('animPos');
   function sendBee(k){
     var box = boxes[k];
     if(!box) return;
-    bee.style.left = (box.offsetLeft + box.offsetWidth / 2 - 29) + 'px';
+    bee.style.left = posBee(box, cells) + 'px';
     bee.setAttribute('data-show','');
   }
 
@@ -1626,7 +1736,7 @@ function beeMarkup(){
     var row=host.querySelector('.cells');
     if(row && !row.querySelector('.bee')){
       var d=document.createElement('div'); d.innerHTML=beeMarkup();
-      row.appendChild(d.firstChild);
+      row.appendChild(d.firstChild); row.classList.add('hasbee');
     }
     bee=row?row.querySelector('.bee'):null;
     if(bee) bee.style.opacity=0;
@@ -1660,7 +1770,7 @@ function beeMarkup(){
     timer=setInterval(function(){
       if(k>=boxes.length){ clearInterval(timer); timer=null; if(bee) bee.style.opacity=0; return; }
       boxes[k].setAttribute('data-state','pick');
-      if(bee) bee.style.left=(boxes[k].offsetLeft+boxes[k].offsetWidth/2-29)+'px';
+      if(bee) bee.style.left=posBee(boxes[k], boxes[k].parentNode)+'px';
       k++; lent.textContent=k;
     }, 340);
   });
